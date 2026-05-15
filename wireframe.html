@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<title>어디갈래? (WSWG) — Wireframe</title>
+<style>
+  :root {
+    --bg: #fafafa;
+    --frame: #ffffff;
+    --line: #d0d0d0;
+    --line-strong: #888;
+    --placeholder: #ececec;
+    --text: #333;
+    --muted: #888;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 32px;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", sans-serif;
+    font-size: 13px;
+    line-height: 1.4;
+  }
+  h1 {
+    font-size: 20px;
+    margin: 0 0 4px;
+  }
+  .subtitle {
+    color: var(--muted);
+    margin-bottom: 24px;
+    font-size: 13px;
+  }
+  .board {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+  .screen {
+    background: var(--frame);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .screen-label {
+    padding: 8px 12px;
+    background: #f3f3f3;
+    border-bottom: 1px solid var(--line);
+    font-size: 12px;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+  }
+  .screen-label b { color: var(--text); }
+  /* Browser frame */
+  .browser {
+    padding: 12px;
+  }
+  .browser-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 8px;
+    border: 1px solid var(--line);
+    border-radius: 4px 4px 0 0;
+    background: #f7f7f7;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--line);
+    display: inline-block;
+  }
+  .url {
+    flex: 1;
+    padding: 2px 8px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 2px;
+    margin-left: 8px;
+    font-family: monospace;
+  }
+  .canvas {
+    border: 1px solid var(--line);
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+    padding: 12px;
+    min-height: 340px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: #fff;
+  }
+  /* Common elements */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 8px;
+    border-bottom: 1px dashed var(--line);
+  }
+  .logo {
+    font-weight: 700;
+    font-size: 14px;
+  }
+  .nav {
+    display: flex;
+    gap: 10px;
+    color: var(--muted);
+    font-size: 11px;
+  }
+  .btn {
+    border: 1px solid var(--line-strong);
+    background: #fff;
+    padding: 4px 10px;
+    border-radius: 3px;
+    font-size: 11px;
+    display: inline-block;
+  }
+  .btn.primary {
+    background: #333;
+    color: #fff;
+    border-color: #333;
+  }
+  .input {
+    border: 1px solid var(--line);
+    background: #fff;
+    padding: 6px 8px;
+    border-radius: 3px;
+    color: var(--muted);
+    font-size: 11px;
+  }
+  .box {
+    border: 1px dashed var(--line-strong);
+    background: var(--placeholder);
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted);
+    font-size: 11px;
+  }
+  .row { display: flex; gap: 8px; }
+  .col { display: flex; flex-direction: column; gap: 8px; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .card {
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 11px;
+  }
+  .thumb {
+    background: var(--placeholder);
+    border: 1px dashed var(--line);
+    height: 50px;
+    border-radius: 2px;
+  }
+  .label-tag {
+    display: inline-block;
+    border: 1px solid var(--line);
+    padding: 1px 6px;
+    border-radius: 10px;
+    font-size: 10px;
+    color: var(--muted);
+  }
+  .title-row { display: flex; align-items: center; justify-content: space-between; }
+  .h-sm { font-weight: 600; font-size: 12px; }
+  .muted { color: var(--muted); font-size: 11px; }
+  .field { display: flex; flex-direction: column; gap: 3px; }
+  .field-label { font-size: 11px; color: var(--muted); }
+  .timeline-item {
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 6px 8px;
+    display: flex;
+    justify-content: space-between;
+    background: #fff;
+  }
+  .day-header {
+    background: #f3f3f3;
+    padding: 4px 8px;
+    font-size: 11px;
+    font-weight: 600;
+    border-radius: 3px;
+  }
+  .avatar {
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    background: var(--placeholder);
+    border: 1px solid var(--line);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    color: var(--muted);
+  }
+  .avatars { display: flex; gap: -4px; }
+  .legend {
+    margin-top: 24px;
+    padding: 12px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+</style>
+</head>
+<body>
+
+<h1>어디갈래? (WSWG) — Wireframe</h1>
+<div class="subtitle">usecase.md 기반 단순 와이어프레임 · 7개 핵심 화면</div>
+
+<div class="board">
+
+  <!-- ============================================================= -->
+  <!-- Screen 1: 랜딩 -->
+  <!-- ============================================================= -->
+  <div class="screen">
+    <div class="screen-label">
+      <span><b>Screen 1.</b> 랜딩 (Guest)</span>
+      <span>진입점</span>
+    </div>
+    <div class="browser">
+      <div class="browser-bar">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        <span class="url">wswg.app/</span>
+      </div>
+      <div class="canvas">
+        <div class="header">
+          <div class="logo">🧳 어디갈래?</div>
+          <div class="row">
+            <span class="btn">로그인</span>
+            <span class="btn primary">회원가입</span>
+          </div>
+        </div>
+        <div class="box" style="height: 100px;">Hero 배너 — 서비스 한 줄 소개</div>
+        <div class="grid-3" style="flex: 1;">
+          <div class="card"><div class="thumb"></div><div class="h-sm">자동 일정</div><div class="muted">데이터 기반 추천</div></div>
+          <div class="card"><div class="thumb"></div><div class="h-sm">공동 편집</div><div class="muted">실시간 협업</div></div>
+          <div class="card"><div class="thumb"></div><div class="h-sm">관광지 검색</div><div class="muted">전국 시·도</div></div>
+        </div>
+        <div class="row" style="justify-content: center; padding-top: 4px;">
+          <span class="btn primary">시작하기 →</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================= -->
+  <!-- Screen 2: 로그인 / 회원가입 -->
+  <!-- ============================================================= -->
+  <div class="screen">
+    <div class="screen-label">
+      <span><b>Screen 2.</b> 로그인 / 회원가입</span>
+      <span>UC1, UC2</span>
+    </div>
+    <div class="browser">
+      <div class="browser-bar">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        <span class="url">wswg.app/login</span>
+      </div>
+      <div class="canvas">
+        <div class="header">
+          <div class="logo">🧳 어디갈래?</div>
+          <div class="nav">홈</div>
+        </div>
+        <div class="grid-2" style="flex: 1; gap: 16px;">
+          <div class="col">
+            <div class="h-sm">로그인</div>
+            <div class="field"><span class="field-label">이메일</span><div class="input">user@email.com</div></div>
+            <div class="field"><span class="field-label">비밀번호</span><div class="input">••••••••</div></div>
+            <span class="btn primary" style="text-align:center;">로그인</span>
+            <div class="muted">아직 회원이 아니신가요? 가입하기 →</div>
+          </div>
+          <div class="col">
+            <div class="h-sm">회원가입</div>
+            <div class="field"><span class="field-label">닉네임</span><div class="input">홍길동</div></div>
+            <div class="field"><span class="field-label">이메일</span><div class="input">user@email.com</div></div>
+            <div class="field"><span class="field-label">비밀번호</span><div class="input">••••••••</div></div>
+            <span class="btn">가입하기</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================= -->
+  <!-- Screen 3: 관광지 검색·목록 -->
+  <!-- ============================================================= -->
+  <div class="screen">
+    <div class="screen-label">
+      <span><b>Screen 3.</b> 관광지 검색·목록</span>
+      <span>UC4, UC5, UC7</span>
+    </div>
+    <div class="browser">
+      <div class="browser-bar">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        <span class="url">wswg.app/attractions</span>
+      </div>
+      <div class="canvas">
+        <div class="header">
+          <div class="logo">🧳 어디갈래?</div>
+          <div class="nav">관광지 · 내 여행 · <span class="avatar">U</span></div>
+        </div>
+        <div class="row">
+          <div class="input" style="flex:1;">🔍  키워드 검색…</div>
+          <div class="input">시/도 ▾</div>
+          <div class="input">구/군 ▾</div>
+          <span class="btn">검색</span>
+        </div>
+        <div class="grid-4" style="flex:1;">
+          <div class="card"><div class="thumb"></div><div class="h-sm">경복궁</div><div class="muted">서울 · 종로</div></div>
+          <div class="card"><div class="thumb"></div><div class="h-sm">해운대</div><div class="muted">부산 · 해운대</div></div>
+          <div class="card"><div class="thumb"></div><div class="h-sm">성산일출봉</div><div class="muted">제주 · 서귀포</div></div>
+          <div class="card"><div class="thumb"></div><div class="h-sm">남이섬</div><div class="muted">강원 · 춘천</div></div>
+          <div class="card"><div class="thumb"></div><div class="h-sm">전주한옥</div><div class="muted">전북 · 전주</div></div>
+          <div class="card"><div class="thumb"></div><div class="h-sm">설악산</div><div class="muted">강원 · 속초</div></div>
+          <div class="card"><div class="thumb"></div><div class="h-sm">…</div><div class="muted">…</div></div>
+          <div class="card"><div class="thumb"></div><div class="h-sm">…</div><div class="muted">…</div></div>
+        </div>
+        <div class="muted" style="text-align:center;">‹ 1 2 3 4 5 ›</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================= -->
+  <!-- Screen 4: 관광지 상세 -->
+  <!-- ============================================================= -->
+  <div class="screen">
+    <div class="screen-label">
+      <span><b>Screen 4.</b> 관광지 상세</span>
+      <span>UC6</span>
+    </div>
+    <div class="browser">
+      <div class="browser-bar">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        <span class="url">wswg.app/attractions/126508</span>
+      </div>
+      <div class="canvas">
+        <div class="header">
+          <div class="logo">🧳 어디갈래?</div>
+          <div class="nav">‹ 목록으로</div>
+        </div>
+        <div class="grid-2">
+          <div class="box" style="height: 140px;">대표 이미지</div>
+          <div class="col">
+            <div class="h-sm" style="font-size: 14px;">경복궁</div>
+            <div class="muted">서울특별시 종로구</div>
+            <div class="row" style="gap:4px; flex-wrap:wrap;">
+              <span class="label-tag">문화재</span>
+              <span class="label-tag">역사</span>
+              <span class="label-tag">도보</span>
+            </div>
+            <div class="muted">📞 02-3700-3900</div>
+            <div class="muted">🌐 royalpalace.go.kr</div>
+            <span class="btn primary">내 여행에 추가</span>
+          </div>
+        </div>
+        <div class="h-sm">관광지 소개</div>
+        <div class="box" style="height: 70px;">overview 본문 영역</div>
+        <div class="h-sm">위치</div>
+        <div class="box" style="height: 70px;">지도 (lat / lng)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================= -->
+  <!-- Screen 5: 여행 계획 자동 생성 -->
+  <!-- ============================================================= -->
+  <div class="screen">
+    <div class="screen-label">
+      <span><b>Screen 5.</b> 여행 계획 자동 생성</span>
+      <span>UC8</span>
+    </div>
+    <div class="browser">
+      <div class="browser-bar">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        <span class="url">wswg.app/plans/new</span>
+      </div>
+      <div class="canvas">
+        <div class="header">
+          <div class="logo">🧳 어디갈래?</div>
+          <div class="nav">새 여행 만들기</div>
+        </div>
+        <div class="h-sm">여행 정보를 입력하세요</div>
+        <div class="grid-2">
+          <div class="field"><span class="field-label">지역 (시/도)</span><div class="input">서울 ▾</div></div>
+          <div class="field"><span class="field-label">세부 지역 (구/군)</span><div class="input">종로구 ▾</div></div>
+          <div class="field"><span class="field-label">출발일</span><div class="input">2026-06-01</div></div>
+          <div class="field"><span class="field-label">종료일</span><div class="input">2026-06-03</div></div>
+          <div class="field"><span class="field-label">인원</span><div class="input">2명</div></div>
+          <div class="field"><span class="field-label">여행 스타일</span><div class="input">자연 · 도보 ▾</div></div>
+        </div>
+        <div class="muted">선택한 조건으로 한국관광공사 데이터 기반 일정이 자동 생성됩니다.</div>
+        <div style="flex:1;"></div>
+        <div class="row" style="justify-content: flex-end;">
+          <span class="btn">취소</span>
+          <span class="btn primary">자동 생성 ✨</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================= -->
+  <!-- Screen 6: 여행 계획 편집 (협업) -->
+  <!-- ============================================================= -->
+  <div class="screen">
+    <div class="screen-label">
+      <span><b>Screen 6.</b> 여행 계획 편집 (협업)</span>
+      <span>UC9, UC10, UC12, UC14, UC15</span>
+    </div>
+    <div class="browser">
+      <div class="browser-bar">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        <span class="url">wswg.app/plans/42</span>
+      </div>
+      <div class="canvas">
+        <div class="header">
+          <div class="col" style="gap:2px;">
+            <div class="h-sm">서울 2박3일 여행</div>
+            <div class="muted">2026-06-01 ~ 06-03 · 2명</div>
+          </div>
+          <div class="row" style="align-items:center;">
+            <div class="row" style="gap:2px;">
+              <span class="avatar">나</span>
+              <span class="avatar">동</span>
+              <span class="avatar">+1</span>
+            </div>
+            <span class="btn">🔗 공유</span>
+            <span class="btn">⋯</span>
+          </div>
+        </div>
+        <div class="col" style="flex:1; gap: 6px;">
+          <div class="day-header">Day 1 · 06-01 (월)</div>
+          <div class="timeline-item"><span>10:00  경복궁</span><span class="muted">동행인 편집중…</span></div>
+          <div class="timeline-item"><span>13:00  광장시장</span><span class="muted">— ⋮</span></div>
+          <div class="timeline-item"><span>16:00  북촌한옥마을</span><span class="muted">— ⋮</span></div>
+          <div class="day-header">Day 2 · 06-02 (화)</div>
+          <div class="timeline-item"><span>09:00  남산타워</span><span class="muted">— ⋮</span></div>
+          <div class="timeline-item" style="border-style: dashed; color: var(--muted);"><span>+ 일정 추가</span><span></span></div>
+        </div>
+        <div class="muted" style="text-align:right;">🟢 실시간 동기화 (Socket.io)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================= -->
+  <!-- Screen 7: 마이페이지 -->
+  <!-- ============================================================= -->
+  <div class="screen">
+    <div class="screen-label">
+      <span><b>Screen 7.</b> 마이페이지</span>
+      <span>UC16, UC17</span>
+    </div>
+    <div class="browser">
+      <div class="browser-bar">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        <span class="url">wswg.app/mypage</span>
+      </div>
+      <div class="canvas">
+        <div class="header">
+          <div class="logo">🧳 어디갈래?</div>
+          <div class="nav">관광지 · 내 여행 · <span class="avatar">U</span> 로그아웃</div>
+        </div>
+        <div class="row">
+          <div class="h-sm" style="border-bottom: 2px solid #333; padding-bottom:2px;">내 여행 (3)</div>
+          <div class="muted">참여중 여행 (2)</div>
+        </div>
+        <div class="grid-2" style="flex:1;">
+          <div class="card">
+            <div class="title-row"><div class="h-sm">서울 2박3일</div><span class="label-tag">진행중</span></div>
+            <div class="muted">06-01 ~ 06-03 · 2명</div>
+            <div class="thumb"></div>
+          </div>
+          <div class="card">
+            <div class="title-row"><div class="h-sm">부산 당일치기</div><span class="label-tag">완료</span></div>
+            <div class="muted">05-20 · 1명</div>
+            <div class="thumb"></div>
+          </div>
+          <div class="card">
+            <div class="title-row"><div class="h-sm">제주 3박4일</div><span class="label-tag">예정</span></div>
+            <div class="muted">07-15 ~ 07-18 · 4명</div>
+            <div class="thumb"></div>
+          </div>
+          <div class="card" style="border-style:dashed; color:var(--muted); align-items:center; justify-content:center;">
+            <div>+ 새 여행 만들기</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="legend">
+  <b>범례</b> · 점선 박스 = 이미지/지도 placeholder · 회색 박스 = 실제 데이터 영역 · 둥근 태그 = 카테고리/상태 ·
+  Screen 라벨 옆 UC 번호는 <code>usecase.md</code> 와 매핑됩니다.
+</div>
+
+</body>
+</html>

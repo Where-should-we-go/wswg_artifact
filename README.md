@@ -196,3 +196,6 @@ erDiagram
 
 ## usecase
 ![usecase](./usecase.png)
+
+## wireframe
+[wireframe 확인하러 가기](./wireframe.html)
