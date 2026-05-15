@@ -154,3 +154,39 @@ classDiagram
 - **Gugun (1) : (N) Attraction**
 
 기본 관광 데이터는 한국관광공사 API 및 공공 데이터를 기반으로 구성됩니다.
+
+erDiagram
+    SIDO {
+        int sidoCode PK "시/도 코드"
+        string sidoName "시/도 이름"
+    }
+
+    GUGUN {
+        int gugunCode PK "구/군 코드"
+        int sidoCode FK "시/도 코드"
+        string gugunName "구/군 이름"
+    }
+
+    ATTRACTION {
+        int no PK "관광지 고유 번호"
+        int contentId "관광지 콘텐츠 ID"
+        string title "관광지 이름"
+        int contentTypeId "관광지 타입 ID"
+        int sidoCode FK "시/도 코드"
+        int gugunCode FK "구/군 코드"
+        string firstImage1 "대표 이미지 URL"
+        string firstImage2 "썸네일 이미지 URL"
+        int mapLevel "지도 확대 레벨"
+        double latitude "위도"
+        double longitude "경도"
+        string tel "전화번호"
+        string addr1 "기본 주소"
+        string addr2 "상세 주소"
+        string homepage "홈페이지"
+        string overview "관광지 설명"
+    }
+
+    SIDO ||--o{ GUGUN : "1:N 포함"
+    SIDO ||--o{ ATTRACTION : "1:N 포함"
+    GUGUN ||--o{ ATTRACTION : "1:N 포함"
+
