@@ -61,6 +61,95 @@
 
 ## 6. 데이터 구조 (Attraction ERD)
 - **Sido (1) : (N) Gugun**
+
+classDiagram
+    %% DTO Classes
+    class SidoDto {
+        -int sidoCode
+        -String sidoName
+        +getSidoCode() int
+        +setSidoCode(sidoCode: int) void
+        +getSidoName() String
+        +setSidoName(sidoName: String) void
+    }
+
+    class GugunDto {
+        -int gugunCode
+        -int sidoCode
+        -String gugunName
+        +getGugunCode() int
+        +getSidoCode() int
+        +getGugunName() String
+    }
+
+    class AttractionDto {
+        -int no
+        -int contentId
+        -String title
+        -int contentTypeId
+        -int sidoCode
+        -int gugunCode
+        -String firstImage1
+        -String firstImage2
+        -int mapLevel
+        -double latitude
+        -double longitude
+        -String tel
+        -String addr1
+        -String addr2
+        -String homepage
+        -String overview
+        +getters()
+        +setters()
+    }
+
+    %% DAO Interface
+    class AttractionDao {
+        <<interface>>
+        +selectSidos() List~SidoDto~
+        +selectGuguns(sidoCode: int) List~GugunDto~
+        +insertAttraction(attractionDto: AttractionDto) int
+        +selectAttraction(no: int) AttractionDto
+        +selectAttractions() List~AttractionDto~
+        +updateAttraction(attractionDto: AttractionDto) int
+        +deleteAttraction(no: int) int
+    }
+
+    %% Service Interface
+    class AttractionService {
+        <<interface>>
+        +getSidos() List~SidoDto~
+        +getGuguns(sidoCode: int) List~GugunDto~
+        +createAttraction(attractionDto: AttractionDto) boolean
+        +getAttraction(no: int) AttractionDto
+        +getAttractions() List~AttractionDto~
+        +updateAttraction(attractionDto: AttractionDto) boolean
+        +deleteAttraction(no: int) boolean
+    }
+
+    %% Controller (Inferred from API spec)
+    class AttractionController {
+        -AttractionService attractionService
+        +sidoList() ResponseEntity
+        +gugunList(sidoCode: int) ResponseEntity
+        +attractionList(sidoCode: int, gugunCode: int, keyword: String) ResponseEntity
+        +attractionDetail(no: int) ResponseEntity
+        +attractionAdd(attractionDto: AttractionDto) ResponseEntity
+        +attractionModify(no: int, attractionDto: AttractionDto) ResponseEntity
+        +attractionRemove(no: int) ResponseEntity
+    }
+
+    %% Relationships
+    AttractionController --> AttractionService : uses
+    AttractionService ..> AttractionDao : uses
+    
+    AttractionDao ..> SidoDto : returns
+    AttractionDao ..> GugunDto : returns
+    AttractionDao ..> AttractionDto : uses/returns
+    
+    AttractionService ..> SidoDto : returns
+    AttractionService ..> GugunDto : returns
+    AttractionService ..> AttractionDto : uses/returns
 - **Sido (1) : (N) Attraction**
 - **Gugun (1) : (N) Attraction**
 
