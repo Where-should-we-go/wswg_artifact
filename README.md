@@ -195,7 +195,9 @@ erDiagram
 [어디갈래? ERD 다이어그램 확인 및 편집하기](https://mermaid.live/edit#pako:eNqtVl1v2jAU_SuWpUmgUQYUaBNVSAimCqlbp9KniRc3vgSriR05TjtW0d8-JyRgJ-Gj23iCe8-5X8e--A17ggJ2sReQOJ4y4ksSLjjSn0-f0PTxHk1SB8RbW4ZCc0bFVAn0tjWmnwvGFYq1faLDGea5koz7mec7CQ3PZx_UPMc3mkjTDV9s-IqgboppohfBaDVKGltH2WarBsrcRQ1uDjNjbRbcbPA28RNe16GfOkotHu88Y1Rbvy0CVXo_NpeCWNNuqYOxUpJ4ionaNrgoGTzBFXA1o9UGFFMB1MMf1xFYlAOjODS5PMOSyVjNQuJD95izV4oYkugOXiAwzFQkTwGggOiiEytV4RHcL7uKPq1IuZFQKrv15l7VvBIhRLrSqke8gHxh8GprqUDGjaZ9XE3bTtP0Ko7v0UxPXS6JBweUJpbSNzeswI9GVpIAvOyM6UTojsXqPb_Q7xVUdtri8h3MOMUdMUmMxyDVvqIGMY-ha5_K6qVPMxpkLvJ8Fu0IY9ePRTALTCJKFPxlgVSns8i7Anc4U7F5KrkHp1QrYGcol6-GY7IVG-J8zTwJHxnJkxABEG6n_IhoFvy_K1Yt77BqFtZUbqLXmxRBABI1ZnwJUgJFSylCNP4xQ3EEXrNeS4Nortyq2KRsMU-1Fi6diR7NA8SRHhJ85Xqhrc0hpkJmoJLMBxn7jFVaa7-d89_PsH4Vku7_Ks-IOwVFWLAf7xmUMaUn9DwjyDdB2XJd5G2hfw74AKHe18cbMY_LA6R_OBqxYlH-Tqo9EhcXo5p776Jk97yqetvtUWnDm_gyK_WnjOKB5iIJKpE8PgTcPXROIu0HxbaILxbnWAsnCzLBp4s6MJ1KYbiFfckodpVMoIVDkCFJf-Lsdi6wWoF-mGFXf6VEPi_wgm80JyL8pxBhQZMi8VfYXZIg1r-2Cyl_Ke-sEjgFOREJV9jtdntZEOy-4V_Y7Tmddr83GA6Hg6v-4MrpXrXwOjW3O4NrZ9BxBt2e4_R7l5sW_p3l7bSdTr9_7fQ16fqyPxw6mz8LuMHQ)
 
 ## usecase
-![usecase](./usecase.png)
+유스케이스 다이어그램(mermaid, GitHub 자동 렌더) + 22 UC 상세 명세는 **[usecase.md](./usecase.md)** 참고.
+> 정적 이미지 `usecase.png`는 피벗 이전(18 UC) 버전이라 폐기 — 정본은 usecase.md.
 
-## wireframe
-[wireframe 확인하러 가기](./wireframe.html)
+## 화면 정의
+화면 목록·흐름(S1~S9 + 관리자)은 **[usecase.md](./usecase.md) §6 화면 도출**이 정본.
+> `wireframe.html`(7화면)은 피벗 이전·이메일 로그인 폼 포함이라 폐기.
