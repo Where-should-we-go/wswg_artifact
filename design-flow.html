@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>어디갈래? (WSWG) — 디자인 시스템 v0.2 (Desktop · Notion-style)</title>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<style>
+:root{
+  /* ── Surface (warm paper, Notion-like) ── */
+  --paper:#FFFFFF;
+  --sidebar:#FBFBFA;
+  --hover:#F1F1EF;
+  --sunken:#F7F6F3;
+  /* ── Ink ── */
+  --ink:#37352F;          /* near-black warm */
+  --ink-2:#6B6A65;        /* secondary */
+  --ink-3:#9B9A95;        /* tertiary/placeholder */
+  --line:#EDEDEB;         /* hairline */
+  --line-2:#E3E2DF;
+  /* ── Brand (restrained) ── */
+  --brand:#2C6FE3;        /* professional blue, used sparingly */
+  --brand-ink:#1F5FCC;
+  --brand-soft:#EAF1FD;
+  /* ── Notion soft tag colors ── */
+  --t-blue-bg:#E3EEF8;   --t-blue-ink:#1F5C8F;   /* 관광 */
+  --t-orange-bg:#FBEADB; --t-orange-ink:#9A5B17; /* 식당 */
+  --t-gray-bg:#EDEDEB;   --t-gray-ink:#605F5A;   /* 이동 */
+  --t-purple-bg:#EEE7F6; --t-purple-ink:#6A4B97; /* 숙소 */
+  --t-yellow-bg:#FAF1D2; --t-yellow-ink:#86691A; /* 메모 */
+  --t-green-bg:#E5F0E4;  --t-green-ink:#3F6B43;  /* 완료/기록 */
+  /* ── Collaborator caret colors ── */
+  --c-1:#2C6FE3; --c-2:#E0633D; --c-3:#3F9A6A;
+  --radius:8px; --radius-sm:5px;
+  --shadow-win:0 24px 60px -16px rgba(20,22,26,.28), 0 8px 22px -10px rgba(20,22,26,.18);
+  --shadow-pop:0 14px 38px -10px rgba(20,22,26,.26);
+  --font:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo",ui-sans-serif,system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:var(--font);background:#F4F3F0;color:var(--ink);
+  -webkit-font-smoothing:antialiased;line-height:1.5;
+  padding:44px 28px 110px;
+}
+.wrap{max-width:1280px;margin:0 auto}
+
+/* ── Doc header ── */
+.doc-head{margin-bottom:30px}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;color:var(--ink-2);
+  background:var(--paper);border:1px solid var(--line-2);padding:5px 12px;border-radius:999px;margin-bottom:16px}
+.eyebrow b{color:var(--brand-ink)}
+h1.doc-title{font-size:34px;font-weight:800;letter-spacing:-.025em;line-height:1.15}
+.doc-sub{font-size:15.5px;color:var(--ink-2);margin-top:9px;max-width:680px}
+
+.section{margin-top:46px}
+.section-tag{display:flex;align-items:center;gap:11px;margin-bottom:18px}
+.section-tag .num{width:26px;height:26px;border-radius:7px;background:var(--ink);color:#fff;display:grid;place-items:center;font-size:12.5px;font-weight:700}
+.section-tag h2{font-size:19px;font-weight:700;letter-spacing:-.01em}
+.section-tag .hint{font-size:13px;color:var(--ink-3);margin-left:auto}
+
+/* ── Token strip ── */
+.tokens{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:14px}
+.tk{background:var(--paper);border:1px solid var(--line-2);border-radius:var(--radius);padding:16px 18px}
+.tk h3{font-size:11px;font-weight:700;color:var(--ink-3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:13px}
+.row-sw{display:flex;gap:7px;flex-wrap:wrap}
+.swx{text-align:center}
+.swx .c{width:38px;height:38px;border-radius:7px;border:1px solid rgba(0,0,0,.05)}
+.swx .n{font-size:10px;color:var(--ink-3);margin-top:4px}
+.tagrow{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.tag{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;padding:3px 9px;border-radius:4px;line-height:1.4}
+.t-blue{background:var(--t-blue-bg);color:var(--t-blue-ink)}
+.t-orange{background:var(--t-orange-bg);color:var(--t-orange-ink)}
+.t-gray{background:var(--t-gray-bg);color:var(--t-gray-ink)}
+.t-purple{background:var(--t-purple-bg);color:var(--t-purple-ink)}
+.t-yellow{background:var(--t-yellow-bg);color:var(--t-yellow-ink)}
+.t-green{background:var(--t-green-bg);color:var(--t-green-ink)}
+.type-line{display:flex;align-items:baseline;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--line)}
+.type-line:last-child{border-bottom:0}
+.type-line .m{font-size:11px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.btnx{font-family:inherit;font-weight:600;font-size:13px;border-radius:6px;padding:7px 14px;border:1px solid var(--line-2);cursor:pointer;background:var(--paper);color:var(--ink)}
+.btnx.pri{background:var(--brand);border-color:var(--brand);color:#fff}
+
+/* ── Window frame ── */
+.window{background:var(--paper);border:1px solid var(--line-2);border-radius:12px;overflow:hidden;box-shadow:var(--shadow-win)}
+.titlebar{display:flex;align-items:center;gap:8px;height:38px;padding:0 14px;background:var(--sunken);border-bottom:1px solid var(--line)}
+.titlebar .dots{display:flex;gap:7px}
+.titlebar .dots i{width:11px;height:11px;border-radius:50%}
+.titlebar .url{flex:1;text-align:center;font-size:11.5px;color:var(--ink-3);font-weight:500}
+
+/* ── App shell ── */
+.app{display:grid;grid-template-columns:228px 1fr;min-height:560px}
+.sidebar{background:var(--sidebar);border-right:1px solid var(--line);padding:12px 8px;font-size:13.5px}
+.ws{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:6px;margin-bottom:8px;cursor:pointer}
+.ws:hover{background:var(--hover)}
+.ws .mk{width:22px;height:22px;border-radius:6px;background:linear-gradient(135deg,#3D7BEA,#2C6FE3);color:#fff;display:grid;place-items:center;font-size:12px;font-weight:800}
+.ws .nm{font-weight:700;font-size:13.5px}
+.ws .cv{margin-left:auto;color:var(--ink-3);font-size:11px}
+.nav-i{display:flex;align-items:center;gap:9px;padding:5px 8px;border-radius:6px;color:var(--ink-2);cursor:pointer}
+.nav-i:hover{background:var(--hover)}
+.nav-i .ic{width:17px;text-align:center;opacity:.8}
+.nav-sec{font-size:11px;font-weight:700;color:var(--ink-3);padding:14px 8px 5px;letter-spacing:.03em}
+.nav-i.page{color:var(--ink)}
+.nav-i.sub{padding-left:24px;font-size:13px}
+.nav-i.on{background:var(--hover);font-weight:600}
+.nav-i .em{font-size:14px;width:17px;text-align:center}
+
+/* ── Editor canvas ── */
+.canvas{position:relative;overflow:hidden}
+.topbar{display:flex;align-items:center;gap:10px;height:44px;padding:0 18px;border-bottom:1px solid var(--line)}
+.crumb{font-size:13px;color:var(--ink-2)}
+.crumb b{color:var(--ink);font-weight:600}
+.topbar .right{margin-left:auto;display:flex;align-items:center;gap:12px}
+.live{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--t-green-ink)}
+.live .pulse{width:7px;height:7px;border-radius:50%;background:#3F9A6A;animation:p 1.7s infinite}
+@keyframes p{0%{box-shadow:0 0 0 0 rgba(63,154,106,.45)}70%{box-shadow:0 0 0 7px rgba(63,154,106,0)}100%{box-shadow:0 0 0 0 rgba(63,154,106,0)}}
+.avs{display:flex}
+.av{width:26px;height:26px;border-radius:50%;border:2px solid var(--paper);display:grid;place-items:center;font-size:11px;font-weight:700;color:#fff;margin-left:-7px}
+.av:first-child{margin-left:0}
+.btn-share{font-size:12.5px;font-weight:600;color:#fff;background:var(--brand);border:0;border-radius:6px;padding:6px 13px;cursor:pointer}
+
+.doc{padding:30px 56px 40px;position:relative}
+.doc .cover{height:120px;border-radius:10px;margin-bottom:18px;
+  background:linear-gradient(120deg,#cfe0f5,#e9eef5 45%,#f7 efe0);
+  background:linear-gradient(120deg,#D4E4F7,#EAEFF6 50%,#F6EEDD);position:relative}
+.doc .pageicon{position:absolute;top:88px;left:56px;font-size:46px;line-height:1}
+.title-h{font-size:38px;font-weight:800;letter-spacing:-.03em;margin:18px 0 14px}
+
+/* property table (Notion database props) */
+.props{display:grid;grid-template-columns:max-content 1fr;gap:2px 0;margin-bottom:8px;max-width:560px}
+.prop{display:contents}
+.prop .k{display:flex;align-items:center;gap:8px;color:var(--ink-2);font-size:13.5px;padding:5px 10px 5px 0}
+.prop .k .ic{width:16px;text-align:center;color:var(--ink-3)}
+.prop .v{padding:5px 8px;font-size:13.5px;border-radius:5px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.prop .v:hover{background:var(--hover)}
+.member{display:inline-flex;align-items:center;gap:5px;background:var(--hover);border-radius:999px;padding:2px 9px 2px 3px;font-size:12.5px;font-weight:500}
+.member .d{width:18px;height:18px;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:10px;font-weight:700}
+
+.divider{height:1px;background:var(--line);margin:18px 0}
+
+/* view tabs */
+.views{display:flex;gap:2px;border-bottom:1px solid var(--line);margin-bottom:6px}
+.view{font-size:13.5px;font-weight:500;color:var(--ink-2);padding:7px 11px;border-bottom:2px solid transparent;cursor:pointer;display:flex;align-items:center;gap:6px}
+.view.on{color:var(--ink);font-weight:600;border-bottom-color:var(--ink)}
+.views .add{margin-left:6px;color:var(--ink-3);padding:7px 6px;font-size:13px}
+
+/* day group + blocks */
+.day-h{display:flex;align-items:center;gap:9px;margin:18px 0 4px;color:var(--ink-2)}
+.day-h .toggle{color:var(--ink-3);font-size:12px}
+.day-h .d{font-weight:700;font-size:14.5px;color:var(--ink)}
+.day-h .meta{font-size:12.5px;color:var(--ink-3)}
+.block{display:flex;align-items:flex-start;gap:6px;padding:7px 8px;border-radius:6px;position:relative;margin-left:-26px}
+.block:hover{background:var(--sunken)}
+.block .handle{display:flex;gap:1px;align-items:center;color:var(--ink-3);opacity:0;padding-top:4px;font-size:13px;cursor:grab}
+.block:hover .handle{opacity:1}
+.block .plus{color:var(--ink-3);opacity:0}
+.block:hover .plus{opacity:1}
+.block .body{flex:1;min-width:0}
+.block .line1{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.block .time{font-size:12px;font-weight:600;color:var(--ink-3);font-variant-numeric:tabular-nums;min-width:38px}
+.block .t{font-size:14.5px;font-weight:500}
+.block .line2{display:flex;align-items:center;gap:7px;margin-top:4px;flex-wrap:wrap}
+.pp{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;color:var(--ink-2);background:var(--hover);border-radius:4px;padding:1px 7px}
+.media-strip{display:flex;gap:6px;margin-top:7px}
+.media-strip .m{width:54px;height:40px;border-radius:6px;background:linear-gradient(135deg,#cfe0f5,#e7d9c6)}
+.media-strip .m.v{position:relative}
+.media-strip .m.v:after{content:"▶";position:absolute;inset:0;display:grid;place-items:center;color:#fff;font-size:11px}
+.block.editing{background:#FCF3EE;box-shadow:inset 0 0 0 1.5px #F0CBB6}
+.caret{display:inline-block;width:2px;height:15px;background:var(--c-2);vertical-align:-2px;animation:bl 1s steps(1) infinite}
+@keyframes bl{50%{opacity:0}}
+.caret-tag{font-size:10.5px;font-weight:700;color:#fff;background:var(--c-2);padding:1px 6px;border-radius:4px;border-bottom-left-radius:0;position:relative;top:-9px;margin-left:-1px}
+.addblock{display:flex;align-items:center;gap:7px;color:var(--ink-3);font-size:13.5px;padding:7px 8px;margin-left:-26px;cursor:pointer}
+.addblock:hover{color:var(--ink-2)}
+
+/* slash menu popover */
+.slash{position:absolute;left:120px;bottom:42px;width:248px;background:var(--paper);border:1px solid var(--line-2);
+  border-radius:9px;box-shadow:var(--shadow-pop);padding:6px;font-size:13px;z-index:5}
+.slash .sh{font-size:11px;color:var(--ink-3);padding:5px 8px 3px}
+.slash .si{display:flex;align-items:center;gap:9px;padding:6px 8px;border-radius:6px}
+.slash .si:hover,.slash .si.on{background:var(--hover)}
+.slash .si .ico{width:26px;height:26px;border-radius:6px;background:var(--sunken);display:grid;place-items:center;font-size:14px}
+.slash .si .tt{font-weight:500}
+.slash .si .ds{font-size:11px;color:var(--ink-3)}
+
+/* supporting screens row */
+.mini-row{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:8px}
+.mini .titlebar{height:32px}
+.mini .titlebar .dots i{width:9px;height:9px}
+.scrcap{font-size:12.5px;font-weight:600;color:var(--ink-2);padding:9px 4px 0;display:flex;align-items:center;gap:7px}
+.scrcap .b{width:18px;height:18px;border-radius:5px;background:var(--ink);color:#fff;display:grid;place-items:center;font-size:10px;font-weight:700}
+
+/* landing */
+.land{padding:30px 34px;display:grid;grid-template-columns:1.1fr .9fr;gap:24px;align-items:center;min-height:300px}
+.land .nav{position:absolute;top:0;left:0;right:0;display:flex;align-items:center;justify-content:space-between;padding:14px 22px}
+.logo{display:flex;align-items:center;gap:8px;font-weight:800;letter-spacing:-.01em}
+.logo .mk{width:22px;height:22px;border-radius:6px;background:linear-gradient(135deg,#3D7BEA,#2C6FE3);color:#fff;display:grid;place-items:center;font-size:12px;font-weight:800}
+.land h2{font-size:30px;font-weight:800;letter-spacing:-.03em;line-height:1.18}
+.land h2 .pt{color:var(--brand)}
+.land p{font-size:14px;color:var(--ink-2);margin:12px 0 18px}
+.land .cta{display:flex;gap:9px}
+.land .vis{background:var(--sunken);border:1px solid var(--line);border-radius:10px;height:200px;position:relative;overflow:hidden;padding:14px}
+.land .vis .mini-block{background:var(--paper);border:1px solid var(--line);border-radius:7px;padding:7px 10px;font-size:12px;margin-bottom:7px;display:flex;align-items:center;gap:7px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+
+/* generate modal */
+.gen{padding:26px 30px;min-height:300px;position:relative}
+.modal{position:absolute;inset:24px 40px auto 40px;background:var(--paper);border:1px solid var(--line-2);border-radius:12px;box-shadow:var(--shadow-pop);padding:22px}
+.modal h3{font-size:18px;font-weight:800;letter-spacing:-.01em;margin-bottom:4px}
+.modal .sub{font-size:13px;color:var(--ink-2);margin-bottom:16px}
+.flabel{font-size:11.5px;font-weight:700;color:var(--ink-3);text-transform:uppercase;letter-spacing:.05em;margin:13px 0 7px}
+.chips{display:flex;gap:7px;flex-wrap:wrap}
+.chip{font-size:12.5px;font-weight:600;padding:6px 12px;border-radius:7px;border:1px solid var(--line-2);background:var(--paper);color:var(--ink-2);cursor:pointer}
+.chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.chip.on.blue{background:var(--brand);border-color:var(--brand)}
+.gen-bg{filter:blur(1px);opacity:.5;pointer-events:none}
+
+/* map view */
+.mapview{display:grid;grid-template-columns:1fr 240px;min-height:300px}
+.map{background:
+  linear-gradient(0deg,rgba(0,0,0,.02),rgba(0,0,0,.02)),
+  repeating-linear-gradient(0deg,transparent 0 38px,rgba(44,111,227,.05) 38px 39px),
+  repeating-linear-gradient(90deg,transparent 0 38px,rgba(44,111,227,.05) 38px 39px),
+  var(--sunken);position:relative}
+.pin{position:absolute;width:30px;height:30px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);
+  border:2.5px solid #fff;box-shadow:0 3px 8px rgba(0,0,0,.18)}
+.pin span{transform:rotate(45deg);display:block;text-align:center;line-height:26px;font-size:13px}
+.region{position:absolute;border-radius:40%;opacity:.16}
+.map-side{border-left:1px solid var(--line);padding:14px}
+.map-side .sh{font-size:11px;font-weight:700;color:var(--ink-3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px}
+.memo-card{border:1px solid var(--line);border-radius:9px;overflow:hidden;margin-bottom:10px}
+.memo-card .ph{height:64px;background:linear-gradient(135deg,#cfe0f5,#e7d9c6)}
+.memo-card .cap{padding:7px 10px}
+.memo-card .cap .t{font-size:12.5px;font-weight:700}
+.memo-card .cap .m{font-size:11px;color:var(--ink-3);margin-top:1px}
+
+.foot{margin-top:30px;padding-top:20px;border-top:1px solid var(--line-2);display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.foot .note{font-size:12.5px;color:var(--ink-3)}
+@media(max-width:900px){.app{grid-template-columns:1fr}.sidebar{display:none}.tokens,.mini-row,.land,.mapview{grid-template-columns:1fr}.doc{padding:24px 22px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="doc-head">
+    <span class="eyebrow"><b>WSWG Design System · v0.2</b> · Desktop · Notion-style 블록 에디터</span>
+    <h1 class="doc-title">어디갈래? 디자인 시스템</h1>
+    <p class="doc-sub">여행 계획 = <code>trips.data</code> JSONB 블록 문서. 노션식 "하나의 원본 → 여러 뷰(일정·갤러리·지도)"를 데스크탑 협업 에디터로 구현. 뉴트럴 페이퍼 톤 + 절제된 블루 강조로 전문적인 인상을 잡았습니다.</p>
+  </header>
+
+  <!-- ───────── TOKENS ───────── -->
+  <section class="section">
+    <div class="section-tag"><span class="num">A</span><h2>디자인 토큰</h2><span class="hint">Notion-like · 뉴트럴 우세</span></div>
+    <div class="tokens">
+      <div class="tk">
+        <h3>Surface & Ink (뉴트럴 우세)</h3>
+        <div class="row-sw">
+          <div class="swx"><div class="c" style="background:#FFFFFF"></div><div class="n">paper</div></div>
+          <div class="swx"><div class="c" style="background:#FBFBFA"></div><div class="n">sidebar</div></div>
+          <div class="swx"><div class="c" style="background:#F7F6F3"></div><div class="n">sunken</div></div>
+          <div class="swx"><div class="c" style="background:#EDEDEB"></div><div class="n">line</div></div>
+          <div class="swx"><div class="c" style="background:#9B9A95"></div><div class="n">ink-3</div></div>
+          <div class="swx"><div class="c" style="background:#6B6A65"></div><div class="n">ink-2</div></div>
+          <div class="swx"><div class="c" style="background:#37352F"></div><div class="n">ink</div></div>
+          <div class="swx"><div class="c" style="background:#2C6FE3"></div><div class="n">brand</div></div>
+        </div>
+        <h3 style="margin-top:16px">블록 타입 태그 (콘텐츠에만 색)</h3>
+        <div class="tagrow">
+          <span class="tag t-blue">📍 관광</span>
+          <span class="tag t-orange">🍜 식당</span>
+          <span class="tag t-gray">🚄 이동</span>
+          <span class="tag t-purple">🏨 숙소</span>
+          <span class="tag t-yellow">📝 메모</span>
+          <span class="tag t-green">✓ 기록</span>
+        </div>
+      </div>
+      <div class="tk">
+        <h3>Typography · Pretendard</h3>
+        <div class="type-line"><span style="font-size:23px;font-weight:800;letter-spacing:-.03em">부산 2박 3일</span><span class="m">Title 38 · 800</span></div>
+        <div class="type-line"><span style="font-size:16px;font-weight:700">1일차 · 7월 1일</span><span class="m">H 24 · 700</span></div>
+        <div class="type-line"><span style="font-size:14.5px">해운대 해수욕장 방문</span><span class="m">Body 16 · 500</span></div>
+        <div class="type-line"><span style="font-size:12px;color:var(--ink-3)">민지님이 2분 전 편집</span><span class="m">Caption 13</span></div>
+      </div>
+      <div class="tk">
+        <h3>Components</h3>
+        <div style="display:flex;gap:8px;margin-bottom:12px"><button class="btnx pri">＋ 새 여행</button><button class="btnx">공유</button></div>
+        <div class="tagrow" style="margin-bottom:12px">
+          <span class="pp" style="background:var(--hover)">💰 9,000원</span>
+          <span class="pp" style="background:var(--hover)">⭐ 5.0</span>
+          <span class="pp" style="background:var(--hover)">⏱ 1시간</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span class="live"><span class="pulse"></span>3명 편집 중</span>
+          <span style="color:var(--c-2);font-size:12px;font-weight:700">│ 민지</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────── HERO: PLANNING EDITOR ───────── -->
+  <section class="section">
+    <div class="section-tag"><span class="num">B</span><h2>여행 계획 에디터 — 노션식 블록 + 실시간 협업</h2><span class="hint">핵심 화면</span></div>
+    <div class="window">
+      <div class="titlebar">
+        <div class="dots"><i style="background:#FF6058"></i><i style="background:#FEBC2E"></i><i style="background:#28C840"></i></div>
+        <div class="url">app.wswg.kr/trips/10</div>
+      </div>
+      <div class="app">
+        <!-- sidebar -->
+        <aside class="sidebar">
+          <div class="ws"><span class="mk">W</span><span class="nm">부산크루</span><span class="cv">▾</span></div>
+          <div class="nav-i"><span class="ic">🔍</span> 검색</div>
+          <div class="nav-i"><span class="ic">🏠</span> 홈</div>
+          <div class="nav-i"><span class="ic">🗺️</span> 그룹 지도</div>
+          <div class="nav-sec">내 여행</div>
+          <div class="nav-i page on"><span class="em">🏖️</span> 부산 2박 3일</div>
+          <div class="nav-i sub on"><span class="em">📅</span> 1일차</div>
+          <div class="nav-i sub"><span class="em">📅</span> 2일차</div>
+          <div class="nav-i sub"><span class="em">📅</span> 3일차</div>
+          <div class="nav-i page"><span class="em">🌴</span> 제주 한 바퀴</div>
+          <div class="nav-i page"><span class="em">🌊</span> 여수 밤바다</div>
+          <div class="nav-sec">참여 중</div>
+          <div class="nav-i page"><span class="em">⛰️</span> 강원 겨울여행</div>
+          <div class="nav-i" style="margin-top:10px"><span class="ic">＋</span> 새 여행</div>
+        </aside>
+
+        <!-- canvas -->
+        <section class="canvas">
+          <div class="topbar">
+            <div class="crumb">부산크루 / <b>부산 2박 3일</b></div>
+            <div class="right">
+              <span class="live"><span class="pulse"></span>실시간 동기화</span>
+              <div class="avs">
+                <span class="av" style="background:var(--c-1)">태</span>
+                <span class="av" style="background:var(--c-2)">민</span>
+                <span class="av" style="background:var(--c-3)">준</span>
+              </div>
+              <button class="btn-share">공유</button>
+            </div>
+          </div>
+
+          <div class="doc">
+            <div class="cover"></div>
+            <div class="pageicon">🏖️</div>
+            <div class="title-h">부산 2박 3일</div>
+
+            <!-- properties (Notion database props) -->
+            <div class="props">
+              <div class="prop"><div class="k"><span class="ic">📅</span> 날짜</div><div class="v">2026. 7. 1 → 7. 3</div></div>
+              <div class="prop"><div class="k"><span class="ic">📍</span> 지역</div><div class="v"><span class="tag t-blue">부산</span></div></div>
+              <div class="prop"><div class="k"><span class="ic">👥</span> 동행</div><div class="v">
+                <span class="member"><span class="d" style="background:var(--c-1)">태</span> 태호</span>
+                <span class="member"><span class="d" style="background:var(--c-2)">민</span> 민지</span>
+                <span class="member"><span class="d" style="background:var(--c-3)">준</span> 준영</span>
+              </div></div>
+              <div class="prop"><div class="k"><span class="ic">🎨</span> 스타일</div><div class="v"><span class="tag t-orange">🎢 액티비티</span> <span class="tag t-green">🏖️ 힐링</span></div></div>
+              <div class="prop"><div class="k"><span class="ic">💰</span> 예산</div><div class="v" style="color:var(--ink-2)">1인 18만원</div></div>
+            </div>
+
+            <div class="divider"></div>
+
+            <!-- view tabs -->
+            <div class="views">
+              <div class="view on">📅 일정</div>
+              <div class="view">🖼️ 갤러리</div>
+              <div class="view">🗺️ 지도</div>
+              <div class="view">📋 보드</div>
+              <span class="add">＋</span>
+            </div>
+
+            <!-- DAY 1 -->
+            <div class="day-h"><span class="toggle">▾</span><span class="d">1일차</span><span class="meta">· 7월 1일 (수) · 4 블록</span></div>
+
+            <div class="block">
+              <div class="handle">⋮⋮</div>
+              <div class="body">
+                <div class="line1"><span class="time">10:00</span><span class="tag t-blue">📍 관광</span><span class="t">해운대 해수욕장</span></div>
+                <div class="line2"><span class="pp">⏱ 1시간</span><span class="pp">📝 일출 명소</span><span class="pp">📌 부산 해운대구</span></div>
+                <div class="media-strip"><div class="m"></div><div class="m v"></div></div>
+              </div>
+            </div>
+
+            <div class="block editing">
+              <div class="handle">⋮⋮</div>
+              <div class="body">
+                <div class="line1"><span class="time">12:30</span><span class="tag t-orange">🍜 식당</span><span class="t">속씨원한 돼지국밥<span class="caret"></span></span><span class="caret-tag">민지</span></div>
+                <div class="line2"><span class="pp">💰 9,000원</span><span class="pp">⭐ 5.0</span><span class="pp" style="color:var(--ink-3)">TourAPI 없음 · 직접 추가</span></div>
+              </div>
+            </div>
+
+            <div class="block">
+              <div class="handle">⋮⋮</div>
+              <div class="body">
+                <div class="line1"><span class="time">15:00</span><span class="tag t-blue">📍 관광</span><span class="t">감천문화마을</span></div>
+                <div class="line2"><span class="pp">⏱ 2시간</span><span class="pp">📌 부산 사하구</span></div>
+              </div>
+            </div>
+
+            <div class="block">
+              <div class="handle">⋮⋮</div>
+              <div class="body">
+                <div class="line1"><span class="time">19:00</span><span class="tag t-purple">🏨 숙소</span><span class="t">광안리 오션뷰 호텔</span></div>
+                <div class="line2"><span class="pp">💰 120,000원</span><span class="pp">🛏 체크인 19:00</span></div>
+              </div>
+            </div>
+
+            <div class="addblock"><span style="font-size:15px">＋</span> 블록 추가 · <span style="color:var(--ink-3)">'/' 입력하면 종류 선택</span></div>
+
+            <!-- DAY 2 -->
+            <div class="day-h"><span class="toggle">▾</span><span class="d">2일차</span><span class="meta">· 7월 2일 (목) · 3 블록</span></div>
+            <div class="block">
+              <div class="handle">⋮⋮</div>
+              <div class="body">
+                <div class="line1"><span class="time">09:00</span><span class="tag t-gray">🚄 이동</span><span class="t">호텔 → 광안대교</span></div>
+                <div class="line2"><span class="pp">🚕 택시 15분</span></div>
+              </div>
+            </div>
+            <div class="block">
+              <div class="handle">⋮⋮</div>
+              <div class="body">
+                <div class="line1"><span class="time">10:00</span><span class="tag t-blue">📍 관광</span><span class="t">광안리 해변 · SUP 체험</span></div>
+                <div class="line2"><span class="pp">💰 40,000원</span><span class="pp">⏱ 2시간</span></div>
+              </div>
+            </div>
+
+            <!-- slash command popover -->
+            <div class="slash">
+              <div class="sh">블록 종류</div>
+              <div class="si on"><span class="ico">📍</span><div><div class="tt">관광지</div><div class="ds">TourAPI에서 검색해 추가</div></div></div>
+              <div class="si"><span class="ico">🍜</span><div><div class="tt">식당 / 카페</div><div class="ds">직접 입력 · 예산·평점</div></div></div>
+              <div class="si"><span class="ico">🚄</span><div><div class="tt">이동</div><div class="ds">교통편 · 예약번호</div></div></div>
+              <div class="si"><span class="ico">📝</span><div><div class="tt">메모</div><div class="ds">자유 텍스트</div></div></div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────── SUPPORTING FLOW ───────── -->
+  <section class="section">
+    <div class="section-tag"><span class="num">C</span><h2>지원 화면</h2><span class="hint">랜딩 · 자동 생성 · 지도 뷰 · 검색</span></div>
+
+    <div class="mini-row">
+
+      <!-- Landing -->
+      <div class="mini">
+        <div class="scrcap"><span class="b">1</span> 랜딩 (Guest)</div>
+        <div class="window" style="margin-top:7px">
+          <div class="titlebar"><div class="dots"><i style="background:#FF6058"></i><i style="background:#FEBC2E"></i><i style="background:#28C840"></i></div><div class="url">wswg.kr</div></div>
+          <div style="position:relative">
+            <div class="land">
+              <div class="nav">
+                <div class="logo"><span class="mk">W</span> 어디갈래?</div>
+                <button class="btnx">로그인</button>
+              </div>
+              <div>
+                <h2>고르기만 하세요,<br><span class="pt">일정은 저희가 짜드려요.</span></h2>
+                <p>지역과 스타일만 선택하면 데이터 기반으로 일정을 자동 생성. 노션처럼 블록으로 짜고, 친구와 실시간으로 함께 다듬어요.</p>
+                <div class="cta"><button class="btnx pri">무료로 시작하기</button><button class="btnx">데모 보기</button></div>
+              </div>
+              <div class="vis">
+                <div class="mini-block"><span class="tag t-blue">📍 관광</span> 해운대 해수욕장</div>
+                <div class="mini-block"><span class="tag t-orange">🍜 식당</span> 돼지국밥 본가</div>
+                <div class="mini-block" style="border-color:#F0CBB6;background:#FCF3EE"><span class="tag t-purple">🏨 숙소</span> 광안리 호텔 <span style="color:var(--c-2);font-weight:700;margin-left:auto;font-size:11px">│준영</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Generate modal -->
+      <div class="mini">
+        <div class="scrcap"><span class="b">2</span> 일정 자동 생성</div>
+        <div class="window" style="margin-top:7px">
+          <div class="titlebar"><div class="dots"><i style="background:#FF6058"></i><i style="background:#FEBC2E"></i><i style="background:#28C840"></i></div><div class="url">app.wswg.kr/trips/new</div></div>
+          <div class="gen">
+            <div class="gen-bg" style="font-size:13px;color:var(--ink-3)">＋ 새 여행 만들기…</div>
+            <div class="modal">
+              <h3>어떤 여행을 그려볼까요?</h3>
+              <div class="sub">선택하면 관광 데이터에서 일정을 자동으로 채워드려요.</div>
+              <div class="flabel">지역</div>
+              <div class="chips"><span class="chip on blue">부산</span><span class="chip">제주</span><span class="chip">여수</span><span class="chip">강원</span></div>
+              <div class="flabel">기간 · 인원</div>
+              <div class="chips"><span class="chip on">2박 3일</span><span class="chip">당일</span><span class="chip on">👥 4명</span></div>
+              <div class="flabel">스타일</div>
+              <div class="chips"><span class="chip on blue">🎢 액티비티</span><span class="chip on blue">🏖️ 힐링</span><span class="chip">🍜 맛집</span><span class="chip">📸 감성</span></div>
+              <button class="btnx pri" style="width:100%;margin-top:18px;padding:11px">✨ 일정 자동 생성</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Map view -->
+      <div class="mini">
+        <div class="scrcap"><span class="b">3</span> 그룹 지도 (지역당 대표 추억 1개)</div>
+        <div class="window" style="margin-top:7px">
+          <div class="titlebar"><div class="dots"><i style="background:#FF6058"></i><i style="background:#FEBC2E"></i><i style="background:#28C840"></i></div><div class="url">app.wswg.kr/groups/5/map</div></div>
+          <div class="mapview">
+            <div class="map">
+              <div class="region" style="left:18%;top:22%;width:120px;height:90px;background:var(--brand)"></div>
+              <div class="region" style="left:52%;top:48%;width:100px;height:80px;background:#E0633D"></div>
+              <div class="pin" style="left:30%;top:34%;background:var(--brand)"><span>📷</span></div>
+              <div class="pin" style="left:60%;top:58%;background:#E0633D"><span>🎥</span></div>
+              <div class="pin" style="left:44%;top:24%;background:#3F9A6A"><span>📷</span></div>
+            </div>
+            <div class="map-side">
+              <div class="sh">대표 추억</div>
+              <div class="memo-card"><div class="ph"></div><div class="cap"><div class="t">부산 · 해운대구</div><div class="m">📷 일출 · 7월 1일</div></div></div>
+              <div class="memo-card"><div class="ph" style="background:linear-gradient(135deg,#f3d9c6,#e0c7b0)"></div><div class="cap"><div class="t">부산 · 사하구</div><div class="m">🎥 감천마을 · 7월 1일</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Search -->
+      <div class="mini">
+        <div class="scrcap"><span class="b">4</span> 관광지 검색 → 블록으로 담기</div>
+        <div class="window" style="margin-top:7px">
+          <div class="titlebar"><div class="dots"><i style="background:#FF6058"></i><i style="background:#FEBC2E"></i><i style="background:#28C840"></i></div><div class="url">app.wswg.kr/places?sido=26</div></div>
+          <div style="padding:18px 22px;min-height:300px">
+            <div style="display:flex;align-items:center;gap:8px;background:var(--sunken);border:1px solid var(--line-2);border-radius:8px;padding:9px 12px;font-size:13.5px;color:var(--ink-2);margin-bottom:12px">🔍 해운대, 감천문화마을…</div>
+            <div class="chips" style="margin-bottom:8px"><span class="chip on">부산</span><span class="chip">서울</span><span class="chip">제주</span></div>
+            <div class="chips" style="margin-bottom:14px"><span class="chip on" style="font-size:12px;padding:5px 11px">해운대구</span><span class="chip" style="font-size:12px;padding:5px 11px">중구</span><span class="chip" style="font-size:12px;padding:5px 11px">사하구</span></div>
+            <div style="display:flex;align-items:center;gap:11px;padding:9px;border-radius:8px;border:1px solid var(--line)">
+              <div style="width:46px;height:46px;border-radius:7px;background:linear-gradient(135deg,#cfe0f5,#e7d9c6);flex-shrink:0"></div>
+              <div style="flex:1"><div style="font-size:13.5px;font-weight:600">해운대 해수욕장 <span class="tag t-blue" style="margin-left:4px">관광지</span></div><div style="font-size:12px;color:var(--ink-3);margin-top:2px">부산 해운대구 · ⭐ 4.6</div></div>
+              <button class="btnx" style="padding:6px 11px;font-size:12.5px">＋ 담기</button>
+            </div>
+            <div style="display:flex;align-items:center;gap:11px;padding:9px;border-radius:8px;border:1px solid var(--line);margin-top:8px">
+              <div style="width:46px;height:46px;border-radius:7px;background:linear-gradient(135deg,#f3d9c6,#e0c7b0);flex-shrink:0"></div>
+              <div style="flex:1"><div style="font-size:13.5px;font-weight:600">감천문화마을 <span class="tag t-purple" style="margin-left:4px">문화</span></div><div style="font-size:12px;color:var(--ink-3);margin-top:2px">부산 사하구 · 휴무 없음</div></div>
+              <button class="btnx" style="padding:6px 11px;font-size:12.5px">＋ 담기</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="foot">
+      <span class="tag t-blue">블루 = 액션·선택 (절제)</span>
+      <span class="tag t-gray">뉴트럴 = 화면 90%</span>
+      <span class="tag" style="background:#FCF3EE;color:#9A5B17">코랄 카렛 = 실시간 협업자</span>
+      <span class="note">· 콘텐츠(블록 타입)에만 색을 쓰고 앱 크롬은 무채색 — 노션식 절제</span>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

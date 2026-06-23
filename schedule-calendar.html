@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>어디갈래? — 일정 뷰 개선 시안 (캘린더 데이그리드)</title>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<style>
+:root{
+  --paper:#FFFFFF; --sunken:#F7F6F3; --hover:#F1F1EF;
+  --ink:#37352F; --ink-2:#6B6A65; --ink-3:#9B9A95;
+  --line:#EDEDEB; --line-2:#E3E2DF;
+  --brand:#2C6FE3;
+  --t-blue-bg:#E3EEF8; --t-blue-fg:#1F5C8F;
+  --t-orange-bg:#FBEADB; --t-orange-fg:#9A5B17;
+  --t-gray-bg:#EDEDEB; --t-gray-fg:#605F5A;
+  --t-purple-bg:#EEE7F6; --t-purple-fg:#6A4B97;
+  --t-yellow-bg:#FAF1D2; --t-yellow-fg:#86691A;
+  --hourPx:46px;
+  --font:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo",ui-sans-serif,system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:#F4F3F0;color:var(--ink);-webkit-font-smoothing:antialiased;padding:40px 26px 90px;line-height:1.5}
+.wrap{max-width:1180px;margin:0 auto}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;color:var(--ink-2);background:var(--paper);border:1px solid var(--line-2);padding:5px 12px;border-radius:999px;margin-bottom:14px}
+.eyebrow b{color:var(--brand)}
+h1{font-size:30px;font-weight:800;letter-spacing:-.025em}
+.sub{font-size:15px;color:var(--ink-2);margin-top:8px;max-width:680px}
+
+.window{background:var(--paper);border:1px solid var(--line-2);border-radius:12px;overflow:hidden;
+  box-shadow:0 24px 60px -16px rgba(20,22,26,.22),0 8px 22px -10px rgba(20,22,26,.14);margin-top:26px}
+.titlebar{display:flex;align-items:center;gap:8px;height:38px;padding:0 14px;background:var(--sunken);border-bottom:1px solid var(--line)}
+.titlebar .dots{display:flex;gap:7px}
+.titlebar .dots i{width:11px;height:11px;border-radius:50%}
+.titlebar .url{flex:1;text-align:center;font-size:11.5px;color:var(--ink-3);font-weight:500}
+
+/* doc head inside */
+.head{padding:20px 26px 0}
+.head .t{font-size:22px;font-weight:800;letter-spacing:-.02em}
+.head .meta{font-size:13px;color:var(--ink-3);margin-top:3px}
+.toolbar{display:flex;align-items:center;gap:10px;padding:16px 26px 14px;flex-wrap:wrap}
+.viewtabs{display:flex;gap:2px;background:var(--hover);border-radius:9px;padding:3px}
+.viewtabs .v{font-size:13px;font-weight:600;color:var(--ink-2);padding:6px 13px;border-radius:7px;cursor:pointer}
+.viewtabs .v.on{background:var(--paper);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.06)}
+.toolbar .spacer{flex:1}
+.btn{font-family:inherit;font-weight:600;font-size:13px;border-radius:7px;padding:7px 13px;border:1px solid var(--line-2);background:var(--paper);color:var(--ink);cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.btn.pri{background:var(--brand);border-color:var(--brand);color:#fff}
+
+/* unscheduled tray */
+.tray{margin:0 26px 6px;background:var(--sunken);border:1px dashed var(--line-2);border-radius:10px;padding:10px 13px}
+.tray .lbl{font-size:11.5px;font-weight:700;color:var(--ink-3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.tray .chips{display:flex;gap:8px;flex-wrap:wrap}
+.uchip{display:inline-flex;align-items:center;gap:7px;background:var(--paper);border:1px solid var(--line-2);border-radius:8px;padding:6px 11px;font-size:13px;cursor:grab;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+.uchip .bar{width:3px;height:15px;border-radius:2px}
+.uchip .grip{color:var(--ink-3);font-size:11px;margin-left:2px}
+
+/* calendar grid */
+.cal{display:grid;grid-template-columns:54px repeat(3,1fr);padding:4px 26px 26px}
+.cal .corner{}
+.cal .dayhead{padding:9px 10px 11px;border-bottom:2px solid var(--line);text-align:left}
+.cal .dayhead .d{font-size:14px;font-weight:800}
+.cal .dayhead .dd{font-size:11.5px;color:var(--ink-3);margin-top:1px}
+.cal .dayhead.today .d{color:var(--brand)}
+.cal .dayhead.today{border-bottom-color:var(--brand)}
+
+.gridbody{grid-column:1 / -1;display:grid;grid-template-columns:54px repeat(3,1fr);position:relative}
+.timecol{position:relative}
+.timecol .hr{height:var(--hourPx);position:relative}
+.timecol .hr span{position:absolute;top:-7px;right:9px;font-size:11px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.daycol{position:relative;border-left:1px solid var(--line)}
+.daycol .lines{position:absolute;inset:0;background-image:repeating-linear-gradient(to bottom,transparent 0,transparent calc(var(--hourPx) - 1px),var(--line) calc(var(--hourPx) - 1px),var(--line) var(--hourPx))}
+.daycol .halflines{position:absolute;inset:0;background-image:repeating-linear-gradient(to bottom,transparent 0,transparent calc(var(--hourPx)/2 - 1px),#F4F3F0 calc(var(--hourPx)/2 - 1px),#F4F3F0 calc(var(--hourPx)/2));opacity:.6}
+
+/* event block */
+.ev{position:absolute;left:6px;right:8px;border-radius:8px;background:var(--paper);border:1px solid var(--line-2);
+  box-shadow:0 1px 2px rgba(20,22,26,.05);overflow:hidden;padding:6px 9px 6px 11px;cursor:pointer}
+.ev:before{content:"";position:absolute;left:0;top:0;bottom:0;width:3.5px;border-radius:3px 0 0 3px}
+.ev .et{font-size:13px;font-weight:600;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ev .etime{font-size:11px;color:var(--ink-3);font-variant-numeric:tabular-nums;margin-top:1px}
+.ev .pills{display:flex;gap:5px;margin-top:5px;flex-wrap:wrap}
+.pp{font-size:11px;color:var(--ink-2);background:var(--hover);border-radius:4px;padding:1px 6px}
+.ev.blue:before{background:var(--t-blue-fg)} .ev.blue .tagdot{color:var(--t-blue-fg)}
+.ev.orange:before{background:var(--t-orange-fg)}
+.ev.purple:before{background:var(--t-purple-fg)}
+.ev.yellow:before{background:var(--t-yellow-fg)}
+.tagchip{display:inline-block;font-size:10px;font-weight:700;padding:1px 6px;border-radius:4px;margin-bottom:3px}
+.tagchip.blue{background:var(--t-blue-bg);color:var(--t-blue-fg)}
+.tagchip.orange{background:var(--t-orange-bg);color:var(--t-orange-fg)}
+.tagchip.purple{background:var(--t-purple-bg);color:var(--t-purple-fg)}
+
+/* move strip (이동) */
+.move{position:absolute;left:6px;right:8px;display:flex;align-items:center;gap:6px;font-size:11px;color:var(--t-gray-fg);
+  background:repeating-linear-gradient(135deg,var(--t-gray-bg) 0 6px,transparent 6px 12px);
+  border-radius:6px;padding:2px 8px;border:1px dashed var(--line-2)}
+
+/* empty slot hint */
+.slot{position:absolute;left:6px;right:8px;border:1.5px dashed var(--line-2);border-radius:8px;
+  display:flex;align-items:center;justify-content:center;color:var(--ink-3);font-size:12px;font-weight:600;background:rgba(44,111,227,.03)}
+
+.callout{display:flex;gap:18px;margin-top:24px;flex-wrap:wrap}
+.callout .c{flex:1;min-width:240px;background:var(--paper);border:1px solid var(--line-2);border-radius:10px;padding:15px 17px}
+.callout .c h4{font-size:13px;font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:7px}
+.callout .c p{font-size:13px;color:var(--ink-2);line-height:1.55}
+.num{width:20px;height:20px;border-radius:6px;background:var(--ink);color:#fff;display:inline-grid;place-items:center;font-size:11px;font-weight:700}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--ink-2);margin:14px 26px 0;padding:0 0 4px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <span class="eyebrow"><b>일정 뷰 개선 시안</b> · 캘린더 데이그리드 (멀티데이 컬럼)</span>
+  <h1>리스트 → 캘린더</h1>
+  <p class="sub">시간이 화면의 척추가 되고, 블록 높이 = 소요시간. 2~3일 여행은 DAY를 나란히 컬럼으로 펼쳐 전체 모양을 한눈에. 우리 디자인 토큰(뉴트럴 + 블루) 그대로.</p>
+
+  <div class="window">
+    <div class="titlebar"><div class="dots"><i style="background:#FF6058"></i><i style="background:#FEBC2E"></i><i style="background:#28C840"></i></div><div class="url">app.wswg.kr/trips/10</div></div>
+
+    <div class="head">
+      <div class="t">🏖️ 부산 2박 3일</div>
+      <div class="meta">2026. 7. 1 → 7. 3 · 👥 3명 · 부산</div>
+    </div>
+
+    <div class="toolbar">
+      <div class="viewtabs">
+        <span class="v on">📅 일정</span>
+        <span class="v">🖼️ 갤러리</span>
+        <span class="v">🗺️ 지도</span>
+      </div>
+      <div class="spacer"></div>
+      <button class="btn">하루씩 보기</button>
+      <button class="btn pri">＋ 일정 추가</button>
+    </div>
+
+    <div class="legend">
+      <span><i style="background:var(--t-blue-fg)"></i>관광</span>
+      <span><i style="background:var(--t-orange-fg)"></i>식당</span>
+      <span><i style="background:var(--t-purple-fg)"></i>숙소</span>
+      <span><i style="background:var(--t-yellow-fg)"></i>메모</span>
+      <span><i style="background:var(--t-gray-fg)"></i>이동(스트립)</span>
+    </div>
+
+    <!-- 시간 미정 트레이 -->
+    <div class="tray">
+      <div class="lbl">🕓 시간 미정 · 드래그해서 캘린더에 배치하세요</div>
+      <div class="chips">
+        <span class="uchip"><span class="bar" style="background:var(--t-yellow-fg)"></span>📝 해운대 일출 보기<span class="grip">⋮⋮</span></span>
+        <span class="uchip"><span class="bar" style="background:var(--t-orange-fg)"></span>🍜 밀면 맛집 후보<span class="grip">⋮⋮</span></span>
+        <span class="uchip"><span class="bar" style="background:var(--t-blue-fg)"></span>📍 흰여울문화마을<span class="grip">⋮⋮</span></span>
+      </div>
+    </div>
+
+    <!-- 캘린더 -->
+    <div class="cal">
+      <div class="corner"></div>
+      <div class="dayhead today"><div class="d">DAY 1</div><div class="dd">7월 1일 (수)</div></div>
+      <div class="dayhead"><div class="d">DAY 2</div><div class="dd">7월 2일 (목)</div></div>
+      <div class="dayhead"><div class="d">DAY 3</div><div class="dd">7월 3일 (금)</div></div>
+    </div>
+    <div class="cal" style="padding-top:0">
+      <div class="gridbody">
+        <!-- time ruler 09~21 -->
+        <div class="timecol">
+          <div class="hr"><span>09:00</span></div>
+          <div class="hr"><span>10:00</span></div>
+          <div class="hr"><span>11:00</span></div>
+          <div class="hr"><span>12:00</span></div>
+          <div class="hr"><span>13:00</span></div>
+          <div class="hr"><span>14:00</span></div>
+          <div class="hr"><span>15:00</span></div>
+          <div class="hr"><span>16:00</span></div>
+          <div class="hr"><span>17:00</span></div>
+          <div class="hr"><span>18:00</span></div>
+          <div class="hr"><span>19:00</span></div>
+          <div class="hr"><span>20:00</span></div>
+          <div class="hr"><span>21:00</span></div>
+        </div>
+
+        <!-- DAY 1 -->
+        <div class="daycol">
+          <div class="lines"></div>
+          <!-- 09:00 base; top=(h-9)*46 -->
+          <div class="ev blue" style="top:46px;height:88px">
+            <span class="tagchip blue">📍 관광</span>
+            <div class="et">해운대 해수욕장</div>
+            <div class="etime">10:00 – 11:00 · 1시간</div>
+          </div>
+          <div class="ev orange" style="top:161px;height:64px">
+            <div class="et">🍜 돼지국밥 본가</div>
+            <div class="etime">12:30 – 13:30</div>
+            <div class="pills"><span class="pp">💰 9,000원</span></div>
+          </div>
+          <div class="ev blue" style="top:276px;height:134px">
+            <span class="tagchip blue">📍 관광</span>
+            <div class="et">감천문화마을</div>
+            <div class="etime">15:00 – 17:00 · 2시간</div>
+            <div class="pills"><span class="pp">📷 사진 명소</span><span class="pp">🚶 도보 코스</span></div>
+          </div>
+          <div class="ev purple" style="top:460px;height:64px">
+            <span class="tagchip purple">🏨 숙소</span>
+            <div class="et">광안리 오션뷰 호텔</div>
+            <div class="etime">19:00 체크인</div>
+          </div>
+        </div>
+
+        <!-- DAY 2 -->
+        <div class="daycol">
+          <div class="lines"></div>
+          <div class="move" style="top:46px;height:18px">🚄 호텔 → 광안대교 · 택시 15분</div>
+          <div class="ev blue" style="top:69px;height:111px">
+            <span class="tagchip blue">📍 관광</span>
+            <div class="et">광안리 해변 · SUP 체험</div>
+            <div class="etime">10:00 – 12:00 · 2시간</div>
+            <div class="pills"><span class="pp">💰 40,000원</span></div>
+          </div>
+          <div class="ev orange" style="top:184px;height:64px">
+            <div class="et">🍜 광안리 회센터</div>
+            <div class="etime">13:00 – 14:00</div>
+          </div>
+          <div class="ev blue" style="top:322px;height:88px">
+            <span class="tagchip blue">📍 관광</span>
+            <div class="et">F1963 복합문화공간</div>
+            <div class="etime">16:00 – 17:00</div>
+          </div>
+          <!-- 빈 슬롯 클릭 힌트 -->
+          <div class="slot" style="top:460px;height:60px">＋ 저녁 일정 추가</div>
+        </div>
+
+        <!-- DAY 3 -->
+        <div class="daycol">
+          <div class="lines"></div>
+          <div class="ev blue" style="top:46px;height:88px">
+            <span class="tagchip blue">📍 관광</span>
+            <div class="et">국제시장 · 깡통시장</div>
+            <div class="etime">10:00 – 11:00</div>
+          </div>
+          <div class="ev orange" style="top:161px;height:64px">
+            <div class="et">🍜 씨앗호떡 · 비빔당면</div>
+            <div class="etime">12:00 – 13:00</div>
+          </div>
+          <div class="move" style="top:322px;height:18px">🚄 부산역 → 서울 · KTX 예약 15:00</div>
+          <div class="ev" style="top:345px;height:42px;background:var(--sunken)">
+            <div class="et" style="color:var(--ink-2)">🚄 KTX 귀가</div>
+            <div class="etime">15:00 출발</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 어떻게 만드나 -->
+  <div class="callout">
+    <div class="c"><h4><span class="num">1</span> 클릭해서 만들기</h4><p>빈 시간대를 클릭하면 그 시각에 블록이 생기고 타입(관광·식당·이동·메모)을 고릅니다. 점선 "＋ 저녁 일정 추가"처럼.</p></div>
+    <div class="c"><h4><span class="num">2</span> 드래그로 옮기고 늘리기</h4><p>블록을 끌어 시간 이동, 아래 모서리를 끌어 소요시간 조절. "감천문화마을 2시간"이 실제 2칸 높이로 보입니다.</p></div>
+    <div class="c"><h4><span class="num">3</span> 미정은 트레이에서</h4><p>시간이 안 정해진 메모·후보는 위쪽 트레이에 두고, 정해지면 캘린더로 끌어다 배치합니다.</p></div>
+  </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>어디갈래? — 시간 표현 방법 비교</title>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<style>
+:root{
+  --paper:#FFFFFF; --sunken:#F7F6F3; --hover:#F3F3F1;
+  --ink:#37352F; --ink-2:#6B6A65; --ink-3:#9B9A95;
+  --line:#ECECE9; --line-2:#E3E2DF; --brand:#2C6FE3;
+  --t-blue-bg:#E3EEF8; --t-blue-fg:#1F5C8F;
+  --t-orange-bg:#FBEADB; --t-orange-fg:#9A5B17;
+  --t-purple-bg:#EEE7F6; --t-purple-fg:#6A4B97;
+  --font:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo",ui-sans-serif,system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:#F4F3F0;color:var(--ink);-webkit-font-smoothing:antialiased;padding:40px 26px 90px;line-height:1.5}
+.wrap{max-width:1080px;margin:0 auto}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;color:var(--ink-2);background:var(--paper);border:1px solid var(--line-2);padding:5px 12px;border-radius:999px;margin-bottom:14px}
+.eyebrow b{color:var(--brand)}
+h1{font-size:30px;font-weight:800;letter-spacing:-.025em}
+.sub{font-size:15px;color:var(--ink-2);margin-top:8px;max-width:700px}
+
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:26px}
+.panel{background:var(--paper);border:1px solid var(--line-2);border-radius:14px;overflow:hidden;box-shadow:0 6px 20px -12px rgba(20,22,26,.18)}
+.phead{padding:15px 18px 12px;border-bottom:1px solid var(--line)}
+.phead .nm{font-size:15px;font-weight:800;display:flex;align-items:center;gap:8px}
+.phead .nm .b{width:22px;height:22px;border-radius:7px;background:var(--ink);color:#fff;display:grid;place-items:center;font-size:12px;font-weight:700}
+.phead .ds{font-size:12.5px;color:var(--ink-2);margin-top:5px}
+.phead .good{font-size:11.5px;color:var(--brand);font-weight:600;margin-top:4px}
+.body{padding:12px 18px 18px}
+
+/* shared bits */
+.tag{font-size:11px;font-weight:600;padding:1px 7px;border-radius:4px}
+.tag.blue{background:var(--t-blue-bg);color:var(--t-blue-fg)}
+.tag.orange{background:var(--t-orange-bg);color:var(--t-orange-fg)}
+.tag.purple{background:var(--t-purple-bg);color:var(--t-purple-fg)}
+.meta{font-size:12px;color:var(--ink-3)}
+.title{font-size:15px;font-weight:600;line-height:1.4}
+.em{font-size:17px;width:21px;text-align:center;flex-shrink:0}
+
+/* ── A. 범위 칩 ── */
+.a .item{display:flex;gap:10px;padding:10px 6px;border-radius:7px}
+.a .item:hover{background:var(--hover)}
+.a .main{flex:1}
+.a .tline{display:flex;align-items:center;gap:7px;margin-bottom:4px}
+.timechip{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:700;color:var(--brand);
+  background:var(--t-blue-bg);border-radius:6px;padding:2px 9px;font-variant-numeric:tabular-nums}
+.a .l2{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin-top:4px}
+
+/* ── B. 오버라인 키커 ── */
+.b .item{display:flex;gap:10px;padding:10px 6px;border-radius:7px}
+.b .item:hover{background:var(--hover)}
+.kicker{font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--ink-3);text-transform:uppercase;font-variant-numeric:tabular-nums;margin-bottom:3px}
+.b .l2{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin-top:5px}
+
+/* ── C. 순서 번호 ── */
+.c .item{display:flex;gap:12px;padding:10px 6px;border-radius:7px;position:relative}
+.c .item:hover{background:var(--hover)}
+.c .num{flex-shrink:0;width:26px;height:26px;border-radius:50%;background:var(--paper);border:2px solid var(--line-2);
+  display:grid;place-items:center;font-size:13px;font-weight:800;color:var(--ink-2);position:relative;z-index:1}
+.c .item.on .num{border-color:var(--brand);color:var(--brand)}
+.c .rail{position:absolute;left:18px;top:30px;bottom:-10px;width:2px;background:var(--line);z-index:0}
+.c .main{flex:1}
+.c .l2{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin-top:4px}
+.c .tmini{font-size:11.5px;color:var(--ink-3);font-weight:600;font-variant-numeric:tabular-nums}
+
+/* ── D. 구간 그룹 ── */
+.d .part{font-size:12px;font-weight:800;color:var(--ink-2);display:flex;align-items:center;gap:7px;margin:14px 0 6px}
+.d .part:first-child{margin-top:2px}
+.d .part .rule{flex:1;height:1px;background:var(--line)}
+.d .part .em{font-size:15px;width:auto}
+.d .item{display:flex;gap:10px;padding:8px 6px;border-radius:7px}
+.d .item:hover{background:var(--hover)}
+.d .main{flex:1}
+.d .l2{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin-top:4px}
+.d .gap{font-size:11px;color:var(--ink-3);padding:1px 6px 1px 37px}
+
+.rec{margin-top:26px;background:var(--paper);border:1px solid var(--line-2);border-radius:12px;padding:18px 20px}
+.rec h3{font-size:15px;font-weight:800;margin-bottom:8px}
+.rec p{font-size:14px;color:var(--ink-2);line-height:1.6}
+.rec b{color:var(--ink)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <span class="eyebrow"><b>시간 표현</b> · 4가지 비교 (같은 일정)</span>
+  <h1>시간을 어떻게 보여줄까</h1>
+  <p class="sub">왼쪽 레일 말고 다른 방법들. 같은 부산 Day 1 일정을 4가지 시간 표현으로. 비정형(자유 작성) + 노션 톤은 모두 유지.</p>
+
+  <div class="grid">
+
+    <!-- A. 범위 칩 -->
+    <div class="panel a">
+      <div class="phead">
+        <div class="nm"><span class="b">A</span> 시간 범위 칩</div>
+        <div class="ds">제목 위에 "10:00–11:00" 파란 칩. 칼럼 없이 블록 안에 인라인.</div>
+        <div class="good">▸ 시간 정보가 또렷 · 깔끔 · 유연</div>
+      </div>
+      <div class="body">
+        <div class="item">
+          <span class="em">📍</span>
+          <div class="main">
+            <div class="tline"><span class="timechip">🕙 10:00–11:00</span></div>
+            <div class="title">해운대 해수욕장</div>
+            <div class="l2"><span class="tag blue">관광</span><span class="meta">부산 해운대구</span></div>
+          </div>
+        </div>
+        <div class="item">
+          <span class="em">🍜</span>
+          <div class="main">
+            <div class="tline"><span class="timechip">🕧 12:30</span></div>
+            <div class="title">속씨원한 돼지국밥</div>
+            <div class="l2"><span class="tag orange">식당</span><span class="meta">💰 9,000원</span></div>
+          </div>
+        </div>
+        <div class="item">
+          <span class="em">🏨</span>
+          <div class="main">
+            <div class="tline"><span class="timechip" style="background:var(--sunken);color:var(--ink-3)">시간 미정</span></div>
+            <div class="title">광안리 오션뷰 호텔</div>
+            <div class="l2"><span class="tag purple">숙소</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- B. 오버라인 키커 -->
+    <div class="panel b">
+      <div class="phead">
+        <div class="nm"><span class="b">B</span> 오버라인 키커</div>
+        <div class="ds">제목 위 작은 회색 글씨로 시간. 잡지 헤드라인처럼 절제된 노션 톤.</div>
+        <div class="good">▸ 가장 미니멀 · 텍스트 위주</div>
+      </div>
+      <div class="body">
+        <div class="item">
+          <span class="em">📍</span>
+          <div class="main">
+            <div class="kicker">10:00 · 1시간</div>
+            <div class="title">해운대 해수욕장</div>
+            <div class="l2"><span class="tag blue">관광</span><span class="meta">부산 해운대구</span></div>
+          </div>
+        </div>
+        <div class="item">
+          <span class="em">🍜</span>
+          <div class="main">
+            <div class="kicker">12:30 · 점심</div>
+            <div class="title">속씨원한 돼지국밥</div>
+            <div class="l2"><span class="tag orange">식당</span><span class="meta">💰 9,000원</span></div>
+          </div>
+        </div>
+        <div class="item">
+          <span class="em">🏨</span>
+          <div class="main">
+            <div class="kicker">시간 미정</div>
+            <div class="title">광안리 오션뷰 호텔</div>
+            <div class="l2"><span class="tag purple">숙소</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- C. 순서 번호 -->
+    <div class="panel c">
+      <div class="phead">
+        <div class="nm"><span class="b">C</span> 순서 번호 (동선)</div>
+        <div class="ds">왼쪽에 ①②③ 동그란 번호 + 연결선. 시간은 작은 보조. "순서가 주인공".</div>
+        <div class="good">▸ 가장 비정형 · 시간 안 정해도 자연스러움</div>
+      </div>
+      <div class="body">
+        <div class="item on">
+          <div class="num">1</div><div class="rail"></div>
+          <div class="main">
+            <div class="title">해운대 해수욕장</div>
+            <div class="l2"><span class="tag blue">관광</span><span class="tmini">10:00</span><span class="meta">· 1시간</span></div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="num">2</div><div class="rail"></div>
+          <div class="main">
+            <div class="title">속씨원한 돼지국밥</div>
+            <div class="l2"><span class="tag orange">식당</span><span class="tmini">12:30</span></div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="num">3</div>
+          <div class="main">
+            <div class="title">광안리 오션뷰 호텔</div>
+            <div class="l2"><span class="tag purple">숙소</span><span class="tmini" style="color:var(--ink-3)">시간 미정</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- D. 구간 그룹 -->
+    <div class="panel d">
+      <div class="phead">
+        <div class="nm"><span class="b">D</span> 구간 그룹 + 간격</div>
+        <div class="ds">시계 대신 🌅오전·☀️오후로 묶고, 사이엔 "이동/빈 시간"만. 시간을 거의 안 씀.</div>
+        <div class="good">▸ 느슨한 계획 · 분 단위 부담 없음</div>
+      </div>
+      <div class="body">
+        <div class="part"><span class="em">🌅</span> 오전 <span class="rule"></span></div>
+        <div class="item">
+          <span class="em">📍</span>
+          <div class="main"><div class="title">해운대 해수욕장</div><div class="l2"><span class="tag blue">관광</span><span class="meta">부산 해운대구</span></div></div>
+        </div>
+        <div class="gap">↓ 점심 먹고 이동 · 30분</div>
+        <div class="part"><span class="em">☀️</span> 오후 <span class="rule"></span></div>
+        <div class="item">
+          <span class="em">🍜</span>
+          <div class="main"><div class="title">속씨원한 돼지국밥</div><div class="l2"><span class="tag orange">식당</span><span class="meta">💰 9,000원</span></div></div>
+        </div>
+        <div class="item">
+          <span class="em">🏨</span>
+          <div class="main"><div class="title">광안리 오션뷰 호텔</div><div class="l2"><span class="tag purple">숙소</span></div></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="rec">
+    <h3>추천</h3>
+    <p><b>C(순서 번호) + A(시간 칩)의 조합</b>을 추천해. 여행은 "순서"가 핵심이고 시간은 정해질 수도/아닐 수도 있으니, <b>왼쪽 ①②③로 동선을 잡고</b>, 시간이 정해진 블록만 <b>옆에 시간 칩</b>을 붙이는 거지. 비정형(시간 강제 안 함) + 가독성(번호로 구조) + 노션 톤을 다 잡아. <br>가장 미니멀하게 가고 싶으면 <b>B(오버라인)</b>, 분 단위가 싫고 느슨하게면 <b>D(구간)</b>.</p>
+  </div>
+
+</div>
+</body>
+</html>
