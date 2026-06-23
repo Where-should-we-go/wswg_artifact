@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>어디갈래? — S2 로그인</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+<style>
+  :root{
+    --paper:#fff; --sunken:#f7f6f3; --border:#ededeb; --border-2:#e3e2df;
+    --ink:#37352f; --ink-2:#6b6a65; --ink-3:#9b9a95; --primary:#2c6fe3;
+    --kakao:#fee500; --kakao-ink:#191600;
+    --font:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo",ui-sans-serif,system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:#e9e8e4;color:var(--ink);font-family:var(--font);-webkit-font-smoothing:antialiased}
+  .board{max-width:1180px;margin:0 auto;padding:32px 24px 80px}
+  .board h1{font-size:15px;font-weight:700;color:var(--ink-2);margin:0 0 4px}
+  .board .meta{font-size:12.5px;color:var(--ink-3);margin:0 0 28px}
+  .frame-label{font-size:12px;font-weight:700;color:var(--ink-3);letter-spacing:.04em;text-transform:uppercase;margin:28px 0 10px}
+  .frame{background:var(--paper);border:1px solid var(--border-2);border-radius:12px;overflow:hidden}
+  .logo{display:inline-flex;align-items:center;gap:7px;font-weight:800;letter-spacing:-.02em}
+  .logo .mark{width:24px;height:24px;border-radius:7px;background:var(--primary);color:#fff;display:grid;place-items:center;font-size:13px;font-weight:800}
+  .sbtn{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;font:inherit;font-size:15px;font-weight:600;border-radius:8px;padding:13px 16px;border:1px solid transparent;cursor:pointer;min-height:48px}
+  .sbtn.google{background:#fff;color:#3c4043;border-color:var(--border-2)}
+  .sbtn.kakao{background:var(--kakao);color:var(--kakao-ink)}
+  .gmark{width:18px;height:18px;border-radius:50%;background:conic-gradient(from -45deg,#ea4335 0 25%,#fbbc05 0 50%,#34a853 0 75%,#4285f4 0);display:inline-block;position:relative}
+  .gmark::after{content:"";position:absolute;inset:5px;background:#fff;border-radius:50%}
+  .terms{font-size:12px;color:var(--ink-3);text-align:center;line-height:1.55;margin-top:22px}
+  .terms a{color:var(--ink-2)}
+  .page{min-height:560px;display:flex;flex-direction:column}
+  .head{padding:18px 26px}
+  .center{flex:1;display:flex;align-items:center;justify-content:center;padding:24px}
+  .card{width:100%;max-width:360px;text-align:center}
+  .card .welcome{font-size:21px;font-weight:800;letter-spacing:-.01em;margin:14px 0 6px}
+  .card .sub{font-size:14px;color:var(--ink-2);margin:0 0 26px;line-height:1.55}
+</style>
+</head>
+<body>
+<div class="board">
+  <h1>S2 로그인 <code>/login</code> — 소셜 로그인(구글·카카오) · 이메일/비번 없음</h1>
+  <p class="meta">디자인시스템 v0.3 · 간소화 셸(로고만). 좌=데스크탑, 우=모바일. 소셜 버튼만 브랜드색 예외.</p>
+
+  <div style="display:flex;gap:40px;flex-wrap:wrap;align-items:flex-start">
+
+    <!-- ============ 데스크탑 ============ -->
+    <div style="flex:1 1 600px;min-width:560px">
+      <div class="frame-label">데스크탑 ≥1024</div>
+      <div class="frame">
+        <div class="page">
+          <div class="head"><span class="logo"><span class="mark">W</span>어디갈래?</span></div>
+          <div class="center">
+            <div class="card">
+              <span class="logo" style="font-size:18px"><span class="mark">W</span>어디갈래?</span>
+              <div class="welcome">환영해요!</div>
+              <p class="sub">소셜 계정으로 바로 시작해요.<br>가입 절차 없이 한 번에 로그인돼요.</p>
+              <div style="display:flex;flex-direction:column;gap:10px">
+                <button class="sbtn google"><span class="gmark"></span> 구글로 시작하기</button>
+                <button class="sbtn kakao">💬 카카오로 시작하기</button>
+              </div>
+              <p class="terms">로그인하면 <a href="#">이용약관</a>과 <a href="#">개인정보 처리방침</a>에<br>동의하는 것으로 볼게요.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="state-note" style="font-size:12px;color:var(--ink-3);margin:10px 2px 0"><b style="color:var(--ink-2)">상태</b> — 클릭 후 OAuth 리다이렉트 동안 버튼 비활성+스피너 "잠깐만요, 로그인하고 있어요…" / 실패 시 토스트 "로그인이 잘 안 됐어요. 다시 해볼까요?"</p>
+    </div>
+
+    <!-- ============ 모바일 ============ -->
+    <div style="flex:0 0 auto">
+      <div class="frame-label">모바일 &lt;768</div>
+      <div class="frame" style="width:390px">
+        <div class="page" style="min-height:620px">
+          <div class="head" style="padding:16px 18px"><span class="logo" style="font-size:15px"><span class="mark">W</span>어디갈래?</span></div>
+          <div class="center" style="padding:18px">
+            <div class="card">
+              <span class="logo" style="font-size:17px"><span class="mark">W</span>어디갈래?</span>
+              <div class="welcome">환영해요!</div>
+              <p class="sub">소셜 계정으로 바로 시작해요.</p>
+              <div style="display:flex;flex-direction:column;gap:10px">
+                <button class="sbtn google"><span class="gmark"></span> 구글로 시작하기</button>
+                <button class="sbtn kakao">💬 카카오로 시작하기</button>
+              </div>
+              <p class="terms">로그인하면 <a href="#">이용약관</a>과 <a href="#">개인정보 처리방침</a>에 동의하는 것으로 볼게요.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

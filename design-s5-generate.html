@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>어디갈래? — S5 여행 자동 생성</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+<style>
+  :root{
+    --paper:#fff; --sidebar:#fbfbfa; --sunken:#f7f6f3; --hover:#f1f1ef;
+    --border:#ededeb; --border-2:#e3e2df;
+    --ink:#37352f; --ink-2:#6b6a65; --ink-3:#9b9a95;
+    --primary:#2c6fe3; --primary-soft:#eaf1fd; --primary-ink:#1f5fcc; --danger:#c9453b;
+    --font:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo",ui-sans-serif,system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:#e9e8e4;color:var(--ink);font-family:var(--font);-webkit-font-smoothing:antialiased}
+  .board{max-width:1400px;margin:0 auto;padding:32px 24px 80px}
+  .board h1{font-size:15px;font-weight:700;color:var(--ink-2);margin:0 0 4px}
+  .board .meta{font-size:12.5px;color:var(--ink-3);margin:0 0 28px}
+  .frame-label{font-size:12px;font-weight:700;color:var(--ink-3);letter-spacing:.04em;text-transform:uppercase;margin:28px 0 10px}
+  .frame{background:var(--paper);border:1px solid var(--border-2);border-radius:12px;overflow:hidden}
+  .logo{display:inline-flex;align-items:center;gap:7px;font-weight:800;letter-spacing:-.02em}
+  .logo .mark{width:20px;height:20px;border-radius:6px;background:var(--primary);color:#fff;display:grid;place-items:center;font-size:11px;font-weight:800}
+  .homerow{display:flex;align-items:center;padding:7px 8px;margin-bottom:10px;border-radius:7px;cursor:pointer}
+  .homerow:hover{background:var(--hover)}
+  .homerow .hint{margin-left:auto;font-size:12px;color:var(--ink-3)}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;font:inherit;font-size:14px;font-weight:600;border-radius:8px;padding:10px 16px;border:1px solid transparent;cursor:pointer}
+  .btn-primary{background:var(--primary);color:#fff}
+  .btn-ghost{background:transparent;color:var(--ink-2)}
+  .nav{display:flex;align-items:center;gap:9px;font-size:13.5px;color:var(--ink-2);padding:6px 9px;border-radius:7px;cursor:pointer}
+  .nav.active{background:var(--hover);color:var(--ink);font-weight:600}
+  .nav .ico{width:18px;text-align:center}
+  .topic{display:flex;align-items:center;justify-content:space-between;padding:11px 22px;border-bottom:1px solid var(--border)}
+  .crumb{font-size:13.5px;color:var(--ink-2)}
+  .crumb b{color:var(--ink);font-weight:600}
+  .ava{width:26px;height:26px;border-radius:50%;background:var(--primary);color:#fff;display:grid;place-items:center;font-size:11px;font-weight:700}
+  .flabel{font-size:13px;font-weight:600;color:var(--ink-2);margin-bottom:8px;display:block}
+  .sel{display:flex;align-items:center;justify-content:space-between;border:1px solid var(--border-2);border-radius:8px;padding:0 12px;height:40px;background:var(--paper);font-size:13.5px;color:var(--ink-2);cursor:pointer}
+  .sel.ph{color:var(--ink-3)}
+  .step{display:inline-flex;align-items:center;border:1px solid var(--border-2);border-radius:8px;overflow:hidden}
+  .step button{width:40px;height:40px;border:0;background:var(--paper);font-size:18px;color:var(--ink-2);cursor:pointer}
+  .step .v{width:54px;text-align:center;font-size:15px;font-weight:600;border-left:1px solid var(--border);border-right:1px solid var(--border);line-height:40px}
+  .schip{font-size:13px;font-weight:600;color:var(--ink-2);border:1px solid var(--border-2);background:var(--paper);border-radius:18px;padding:7px 14px;cursor:pointer}
+  .schip.on{background:var(--primary-soft);color:var(--primary-ink);border-color:#bcd5f7}
+  .ta{border:1px solid var(--border-2);border-radius:8px;padding:11px 12px;min-height:74px;font-size:13.5px;color:var(--ink-3);line-height:1.6;background:var(--paper)}
+  .summary{font-size:13px;color:var(--ink-2)}
+  .summary b{color:var(--ink);font-weight:700}
+  .state-note{font-size:12px;color:var(--ink-3);margin:10px 2px 0}
+  .state-note b{color:var(--ink-2);font-weight:600}
+</style>
+</head>
+<body>
+<div class="board">
+  <h1>S5 여행 자동 생성 <code>/plans/new</code> — 2열 폼 · 스타일 칩 · 생성 진행</h1>
+  <p class="meta">디자인시스템 v0.3 · 좌=데스크탑(2열), 우=모바일(1열, 하단 고정). 모임 "새 여행 → 자동 생성"에서 진입.</p>
+
+  <div style="display:flex;gap:40px;flex-wrap:wrap;align-items:flex-start">
+
+    <!-- ============ 데스크탑 ============ -->
+    <div style="flex:1 1 880px;min-width:840px">
+      <div class="frame-label">데스크탑 ≥1024</div>
+      <div class="frame" style="display:flex;height:640px">
+        <aside style="width:228px;flex:0 0 228px;background:var(--sidebar);border-right:1px solid var(--border);padding:14px 12px;display:flex;flex-direction:column">
+          <div class="homerow" title="홈으로 가기"><span class="logo"><span class="mark">W</span>어디갈래?</span><span class="hint">홈 ⌂</span></div>
+          <div style="display:flex;flex-direction:column;gap:2px">
+            <div class="nav active"><span class="ico">🏠</span> 내 여행</div>
+            <div class="nav"><span class="ico">👥</span> 모임</div>
+            <div class="nav"><span class="ico">🔍</span> 관광지 검색</div>
+          </div>
+          <div style="margin-top:auto;display:flex;align-items:center;gap:8px;padding:8px 4px;font-size:13px;color:var(--ink-2)">
+            <span class="ava" style="width:24px;height:24px">지</span> 지우님
+          </div>
+        </aside>
+
+        <section style="flex:1;min-width:0;display:flex;flex-direction:column">
+          <div class="topic"><span class="crumb">부산크루 › 새 여행 › <b>자동 생성</b></span><span class="ava">지</span></div>
+          <div style="flex:1;overflow:auto;padding:30px 36px">
+            <div style="max-width:720px;margin:0 auto">
+              <h2 style="font-size:25px;font-weight:800;margin:0">어디로, 어떤 여행을 떠나볼까요?</h2>
+              <p style="font-size:14px;color:var(--ink-2);margin:8px 0 26px">지역과 스타일만 고르면, 일정은 저희가 짜드릴게요.</p>
+
+              <!-- 2열 폼 -->
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:26px 30px">
+                <!-- 1열 -->
+                <div>
+                  <span class="flabel">지역</span>
+                  <div style="display:flex;gap:8px">
+                    <div class="sel" style="flex:1">부산광역시 <span style="color:var(--ink-3)">⌄</span></div>
+                    <div class="sel" style="flex:1">해운대구 <span style="color:var(--ink-3)">⌄</span></div>
+                  </div>
+                </div>
+                <div>
+                  <span class="flabel">인원</span>
+                  <div class="step"><button>−</button><span class="v">2</span><button>＋</button></div>
+                </div>
+                <div>
+                  <span class="flabel">기간</span>
+                  <div style="display:flex;align-items:center;gap:9px">
+                    <div class="sel" style="flex:1">2026. 7. 1 <span style="color:var(--ink-3)">📅</span></div>
+                    <span style="color:var(--ink-3)">–</span>
+                    <div class="sel" style="flex:1">2026. 7. 3 <span style="color:var(--ink-3)">📅</span></div>
+                  </div>
+                </div>
+                <div></div>
+                <!-- 스타일 (전체 폭) -->
+                <div style="grid-column:1/3">
+                  <span class="flabel">여행 스타일 <span style="color:var(--ink-3);font-weight:400">· 여러 개 골라도 돼요</span></span>
+                  <div style="display:flex;flex-wrap:wrap;gap:8px">
+                    <span class="schip on">🌊 바다</span><span class="schip on">🍜 맛집</span><span class="schip">🏞️ 자연</span><span class="schip">🏛️ 문화·역사</span><span class="schip on">☕ 카페</span><span class="schip">🎡 액티비티</span><span class="schip">🛍️ 쇼핑</span><span class="schip">🚶 도보 여행</span><span class="schip">🌙 야경</span><span class="schip">🧘 힐링</span>
+                  </div>
+                </div>
+                <div style="grid-column:1/3">
+                  <span class="flabel">추가로 바라는 점 <span style="color:var(--ink-3);font-weight:400">· 선택, 자유롭게 적어주세요</span></span>
+                  <div class="ta">예) 아이랑 함께라 너무 빡빡하지 않게요. 둘째 날은 바다 근처 맛집 위주로 부탁해요.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- 액션바 -->
+          <div style="border-top:1px solid var(--border);padding:14px 36px;display:flex;align-items:center;justify-content:space-between">
+            <span class="summary"><b>부산 해운대구</b> · 2박 3일 · 2명 · 바다·맛집·카페</span>
+            <div style="display:flex;gap:9px">
+              <button class="btn btn-ghost">취소</button>
+              <button class="btn btn-primary">✨ 자동 생성</button>
+            </div>
+          </div>
+        </section>
+      </div>
+      <p class="state-note"><b>상태</b> — 생성 중 폼 위 진행 인디케이터 "일정을 짜고 있어요…" · 종료일&lt;출발일 → 인라인 검증(보더 빨강) "돌아오는 날이 떠나는 날보다 빨라요" · 후보 부족 → 생성 후 "후보가 적어 일부만 채웠어요" 배너.</p>
+    </div>
+
+    <!-- ============ 모바일 ============ -->
+    <div style="flex:0 0 auto">
+      <div class="frame-label">모바일 &lt;768 · 1열 · 하단 고정</div>
+      <div class="frame" style="width:390px;height:640px;display:flex;flex-direction:column">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:13px 16px;border-bottom:1px solid var(--border)">
+          <div style="display:flex;align-items:center;gap:12px"><span style="font-size:18px">‹</span><span style="font-size:15px;font-weight:700">자동 생성</span></div>
+          <span class="ava">지</span>
+        </div>
+        <div style="flex:1;overflow:auto;padding:18px 16px 16px">
+          <h2 style="font-size:20px;font-weight:800;margin:0 0 4px">어디로 떠나볼까요?</h2>
+          <p style="font-size:13px;color:var(--ink-2);margin:0 0 20px">지역과 스타일만 고르면 돼요.</p>
+          <div style="margin-bottom:18px"><span class="flabel">지역</span><div style="display:flex;flex-direction:column;gap:8px"><div class="sel">부산광역시 <span style="color:var(--ink-3)">⌄</span></div><div class="sel">해운대구 <span style="color:var(--ink-3)">⌄</span></div></div></div>
+          <div style="margin-bottom:18px"><span class="flabel">기간</span><div style="display:flex;align-items:center;gap:8px"><div class="sel" style="flex:1">7. 1 📅</div><span style="color:var(--ink-3)">–</span><div class="sel" style="flex:1">7. 3 📅</div></div></div>
+          <div style="margin-bottom:18px"><span class="flabel">인원</span><div class="step"><button>−</button><span class="v">2</span><button>＋</button></div></div>
+          <div><span class="flabel">여행 스타일</span><div style="display:flex;flex-wrap:wrap;gap:8px"><span class="schip on">🌊 바다</span><span class="schip on">🍜 맛집</span><span class="schip">🏞️ 자연</span><span class="schip on">☕ 카페</span><span class="schip">🏛️ 문화·역사</span><span class="schip">🎡 액티비티</span><span class="schip">🌙 야경</span></div></div>
+          <div style="margin-top:18px"><span class="flabel">추가로 바라는 점 <span style="color:var(--ink-3);font-weight:400">· 선택</span></span><div class="ta" style="min-height:64px">예) 여유로운 일정이면 좋겠어요. 맛집 위주로 부탁해요.</div></div>
+        </div>
+        <div style="border-top:1px solid var(--border);padding:11px 16px">
+          <button class="btn btn-primary" style="width:100%;min-height:46px">✨ 자동 생성</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

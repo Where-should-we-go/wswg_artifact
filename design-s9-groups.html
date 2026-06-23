@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>어디갈래? — S9 모임 관리</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+<style>
+  :root{
+    --paper:#fff; --sidebar:#fbfbfa; --sunken:#f7f6f3; --hover:#f1f1ef;
+    --border:#ededeb; --border-2:#e3e2df;
+    --ink:#37352f; --ink-2:#6b6a65; --ink-3:#9b9a95;
+    --primary:#2c6fe3; --primary-soft:#eaf1fd; --primary-ink:#1f5fcc; --danger:#c9453b;
+    --t-yellow-bg:#faf1d2; --t-yellow-fg:#86691a;
+    --c1:#2c6fe3; --c2:#e0633d; --c3:#3f9a6a;
+    --font:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo",ui-sans-serif,system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:#e9e8e4;color:var(--ink);font-family:var(--font);-webkit-font-smoothing:antialiased}
+  .board{max-width:1400px;margin:0 auto;padding:32px 24px 80px}
+  .board h1{font-size:15px;font-weight:700;color:var(--ink-2);margin:0 0 4px}
+  .board .meta{font-size:12.5px;color:var(--ink-3);margin:0 0 28px}
+  .frame-label{font-size:12px;font-weight:700;color:var(--ink-3);letter-spacing:.04em;text-transform:uppercase;margin:28px 0 10px}
+  .frame{background:var(--paper);border:1px solid var(--border-2);border-radius:12px;overflow:hidden}
+  .logo{display:inline-flex;align-items:center;gap:7px;font-weight:800;letter-spacing:-.02em}
+  .logo .mark{width:20px;height:20px;border-radius:6px;background:var(--primary);color:#fff;display:grid;place-items:center;font-size:11px;font-weight:800}
+  .homerow{display:flex;align-items:center;padding:7px 8px;margin-bottom:10px;border-radius:7px;cursor:pointer}
+  .homerow:hover{background:var(--hover)}
+  .homerow .hint{margin-left:auto;font-size:12px;color:var(--ink-3)}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;font:inherit;font-size:13.5px;font-weight:600;border-radius:8px;padding:8px 13px;border:1px solid transparent;cursor:pointer}
+  .btn-primary{background:var(--primary);color:#fff}
+  .btn-outline{background:var(--paper);color:var(--ink-2);border-color:var(--border-2)}
+  .nav{display:flex;align-items:center;gap:9px;font-size:13.5px;color:var(--ink-2);padding:6px 9px;border-radius:7px;cursor:pointer}
+  .nav.active{background:var(--hover);color:var(--ink);font-weight:600}
+  .nav .ico{width:18px;text-align:center}
+  .ws{display:flex;align-items:center;gap:8px;padding:8px 9px;border-radius:7px;background:var(--hover);font-size:13.5px;font-weight:600}
+  .ws .av{width:20px;height:20px;border-radius:6px;background:var(--c1);color:#fff;display:grid;place-items:center;font-size:11px;font-weight:700}
+  .topic{display:flex;align-items:center;justify-content:space-between;padding:11px 22px;border-bottom:1px solid var(--border)}
+  .crumb{font-size:13.5px;color:var(--ink-2)}
+  .ava{width:26px;height:26px;border-radius:50%;background:var(--c1);color:#fff;display:grid;place-items:center;font-size:11px;font-weight:700}
+  /* 모임 카드 */
+  .gcard{display:flex;align-items:center;gap:11px;padding:11px;border-radius:10px;border:1px solid transparent;cursor:pointer}
+  .gcard:hover{background:var(--hover)}
+  .gcard.on{background:var(--primary-soft);border-color:#cfe0f8}
+  .gcard .ic{width:40px;height:40px;flex:0 0 40px;border-radius:10px;display:grid;place-items:center;font-size:19px;background:#dfe9f6}
+  .gcard .ttl{font-size:14px;font-weight:700}
+  .gcard .sub{font-size:12px;color:var(--ink-3);margin-top:2px}
+  .stack{display:flex}
+  .stack .s{width:20px;height:20px;border-radius:50%;border:2px solid var(--paper);display:grid;place-items:center;font-size:9px;font-weight:700;color:#fff;margin-left:-6px}
+  .stack .s:first-child{margin-left:0}
+  /* 멤버 행 */
+  .mrow{display:flex;align-items:center;gap:11px;padding:10px 4px;border-bottom:1px solid var(--border)}
+  .mav{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:700;color:#fff}
+  .role{font-size:11px;font-weight:600;border-radius:5px;padding:2px 7px;background:var(--t-yellow-bg);color:var(--t-yellow-fg)}
+  .rm{font-size:12.5px;color:var(--ink-3);cursor:pointer;margin-left:auto}
+  .label{font-size:11px;font-weight:700;color:var(--ink-3);letter-spacing:.04em;text-transform:uppercase;margin:18px 0 8px}
+  .triprow{display:flex;align-items:center;gap:9px;font-size:13.5px;color:var(--ink-2);padding:9px 4px;border-bottom:1px solid var(--border);cursor:pointer}
+  .invite{display:flex;align-items:center;gap:8px;background:var(--sunken);border:1px solid var(--border);border-radius:8px;padding:8px 11px;font-size:12.5px;color:var(--ink-2);margin-top:10px}
+  .state-note{font-size:12px;color:var(--ink-3);margin:10px 2px 0}
+  .state-note b{color:var(--ink-2);font-weight:600}
+</style>
+</head>
+<body>
+<div class="board">
+  <h1>S9 모임 관리 <code>/groups</code> — 앱 셸 2분할(모임 리스트 / 상세·멤버·초대)</h1>
+  <p class="meta">디자인시스템 v0.3 · 좌=데스크탑(2분할), 우=모바일(리스트→상세 push). 시퀀스 ②(계획) 시작.</p>
+
+  <div style="display:flex;gap:40px;flex-wrap:wrap;align-items:flex-start">
+
+    <!-- ============ 데스크탑 ============ -->
+    <div style="flex:1 1 880px;min-width:840px">
+      <div class="frame-label">데스크탑 ≥1024</div>
+      <div class="frame" style="display:flex;height:660px">
+        <!-- 사이드바 -->
+        <aside style="width:228px;flex:0 0 228px;background:var(--sidebar);border-right:1px solid var(--border);padding:14px 12px;display:flex;flex-direction:column">
+          <div class="homerow" title="홈으로 가기"><span class="logo"><span class="mark">W</span>어디갈래?</span><span class="hint">홈 ⌂</span></div>
+          <div style="display:flex;flex-direction:column;gap:2px">
+            <div class="nav"><span class="ico">🏠</span> 홈</div>
+            <div class="nav"><span class="ico">🧳</span> 내 여행</div>
+            <div class="nav active"><span class="ico">👥</span> 모임</div>
+            <div class="nav"><span class="ico">🔍</span> 관광지 검색</div>
+          </div>
+          <div style="margin-top:auto;display:flex;align-items:center;gap:8px;padding:8px 4px;font-size:13px;color:var(--ink-2)">
+            <span class="ava" style="width:24px;height:24px">지</span> 지우님
+          </div>
+        </aside>
+
+        <section style="flex:1;min-width:0;display:flex;flex-direction:column">
+          <div class="topic"><span class="crumb">모임 관리</span><span class="ava">지</span></div>
+          <div style="flex:1;display:flex;min-height:0">
+            <!-- 좌: 모임 리스트 -->
+            <div style="width:300px;flex:0 0 300px;border-right:1px solid var(--border);padding:18px 16px;overflow:auto">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+                <h2 style="font-size:19px;font-weight:800;margin:0">모임</h2>
+                <button class="btn btn-primary">＋ 새 모임</button>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:4px">
+                <div class="gcard on">
+                  <div class="ic">🏖️</div>
+                  <div style="flex:1;min-width:0"><div class="ttl">부산크루</div><div class="sub">멤버 3 · 여행 2</div></div>
+                  <div class="stack"><span class="s" style="background:var(--c1)">지</span><span class="s" style="background:var(--c2)">민</span><span class="s" style="background:var(--c3)">하</span></div>
+                </div>
+                <div class="gcard">
+                  <div class="ic" style="background:#e2f0e0">🌴</div>
+                  <div style="flex:1;min-width:0"><div class="ttl">제주 가자</div><div class="sub">멤버 2 · 여행 1</div></div>
+                  <div class="stack"><span class="s" style="background:var(--c1)">지</span><span class="s" style="background:var(--c2)">현</span></div>
+                </div>
+                <div class="gcard">
+                  <div class="ic" style="background:#f0e6da">🌸</div>
+                  <div style="flex:1;min-width:0"><div class="ttl">대학 동기</div><div class="sub">멤버 5 · 여행 3</div></div>
+                  <div class="stack"><span class="s" style="background:var(--c1)">지</span><span class="s" style="background:var(--c2)">민</span><span class="s" style="background:var(--ink-3)">+3</span></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 우: 상세 -->
+            <div style="flex:1;min-width:0;overflow:auto;padding:22px 26px">
+              <div style="display:flex;align-items:center;justify-content:space-between">
+                <div style="display:flex;align-items:center;gap:11px">
+                  <div class="gcard" style="padding:0;pointer-events:none"><div class="ic">🏖️</div></div>
+                  <div><div style="font-size:20px;font-weight:800">부산크루</div><div style="font-size:12.5px;color:var(--ink-3)">멤버 3명 · 여행 2개</div></div>
+                </div>
+                <span style="color:var(--ink-3)">⋯</span>
+              </div>
+              <!-- 액션바 -->
+              <div style="display:flex;gap:8px;margin-top:16px">
+                <button class="btn btn-primary">＋ 멤버 추가</button>
+                <button class="btn btn-outline">🔗 초대 링크</button>
+                <button class="btn btn-outline">🗺️ 발자취 지도</button>
+              </div>
+              <div class="invite">🔗 wswg.app/join/8xK2…<span style="margin-left:auto;color:var(--primary-ink);font-weight:600;cursor:pointer">복사</span></div>
+              <div style="font-size:11.5px;color:var(--ink-3);margin-top:6px">링크는 일정 시간 뒤 만료돼요.</div>
+
+              <!-- 멤버 -->
+              <div class="label">멤버 3</div>
+              <div class="mrow"><span class="mav" style="background:var(--c1)">지</span><span style="font-weight:600">지우</span><span class="role">만든 사람</span></div>
+              <div class="mrow"><span class="mav" style="background:var(--c2)">민</span><span style="font-weight:600">민준</span><span class="rm">제거</span></div>
+              <div class="mrow"><span class="mav" style="background:var(--c3)">하</span><span style="font-weight:600">하늘</span><span class="rm">제거</span></div>
+
+              <!-- 이 모임의 여행 -->
+              <div class="label">이 모임의 여행</div>
+              <div class="triprow">📄 부산 2박3일 <span style="color:var(--ink-3);margin-left:auto">진행중 ›</span></div>
+              <div class="triprow">📄 광안리 당일치기 <span style="color:var(--ink-3);margin-left:auto">완료 ›</span></div>
+            </div>
+          </div>
+        </section>
+      </div>
+      <p class="state-note"><b>상태</b> — 빈 "아직 모임이 없어요! 첫 모임을 만들어 친구를 불러볼까요?" · 만료 토큰 "초대 링크가 만료됐어요. 새 링크를 받아볼까요?" · 중복 가입 "이미 이 모임의 멤버예요!" · 비멤버 403.</p>
+    </div>
+
+    <!-- ============ 모바일 ============ -->
+    <div style="flex:0 0 auto">
+      <div class="frame-label">모바일 &lt;768 · 리스트→상세 push</div>
+      <div class="frame" style="width:390px;height:660px;display:flex;flex-direction:column">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:13px 16px;border-bottom:1px solid var(--border)">
+          <div style="display:flex;align-items:center;gap:12px"><span style="font-size:19px">☰</span><span style="font-size:16px;font-weight:700">모임</span></div>
+          <span class="ava">지</span>
+        </div>
+        <div style="flex:1;overflow:auto;padding:16px">
+          <button class="btn btn-primary" style="width:100%;margin-bottom:14px">＋ 새 모임</button>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div class="gcard" style="border:1px solid var(--border)"><div class="ic">🏖️</div><div style="flex:1;min-width:0"><div class="ttl">부산크루</div><div class="sub">멤버 3 · 여행 2</div></div><span style="color:var(--ink-3)">›</span></div>
+            <div class="gcard" style="border:1px solid var(--border)"><div class="ic" style="background:#e2f0e0">🌴</div><div style="flex:1;min-width:0"><div class="ttl">제주 가자</div><div class="sub">멤버 2 · 여행 1</div></div><span style="color:var(--ink-3)">›</span></div>
+            <div class="gcard" style="border:1px solid var(--border)"><div class="ic" style="background:#f0e6da">🌸</div><div style="flex:1;min-width:0"><div class="ttl">대학 동기</div><div class="sub">멤버 5 · 여행 3</div></div><span style="color:var(--ink-3)">›</span></div>
+          </div>
+        </div>
+        <div style="border-top:1px solid var(--border);background:var(--sunken);padding:10px 16px;font-size:12px;color:var(--ink-3);text-align:center">카드 탭 → 상세(멤버·초대) 화면으로 push</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

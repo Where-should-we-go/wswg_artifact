@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>어디갈래? — S7 마이페이지 (앱 셸)</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+<style>
+  :root{
+    --paper:#fff; --sidebar:#fbfbfa; --sunken:#f7f6f3; --hover:#f1f1ef;
+    --border:#ededeb; --border-2:#e3e2df;
+    --ink:#37352f; --ink-2:#6b6a65; --ink-3:#9b9a95;
+    --primary:#2c6fe3; --primary-soft:#eaf1fd; --primary-ink:#1f5fcc;
+    --t-blue-bg:#e3eef8; --t-blue-fg:#1f5c8f;
+    --t-yellow-bg:#faf1d2; --t-yellow-fg:#86691a;
+    --t-green-bg:#e5f0e4; --t-green-fg:#3f6b43;
+    --c1:#2c6fe3; --c2:#e0633d; --c3:#3f9a6a;
+    --font:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo",ui-sans-serif,system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:#e9e8e4;color:var(--ink);font-family:var(--font);-webkit-font-smoothing:antialiased}
+  .board{max-width:1400px;margin:0 auto;padding:32px 24px 80px}
+  .board h1{font-size:15px;font-weight:700;color:var(--ink-2);margin:0 0 4px}
+  .board .meta{font-size:12.5px;color:var(--ink-3);margin:0 0 28px}
+  .frame-label{font-size:12px;font-weight:700;color:var(--ink-3);letter-spacing:.04em;text-transform:uppercase;margin:28px 0 10px}
+  .frame{background:var(--paper);border:1px solid var(--border-2);border-radius:12px;overflow:hidden}
+  .logo{display:inline-flex;align-items:center;gap:7px;font-weight:800;letter-spacing:-.02em}
+  .logo .mark{width:20px;height:20px;border-radius:6px;background:var(--primary);color:#fff;display:grid;place-items:center;font-size:11px;font-weight:800}
+  .homerow{display:flex;align-items:center;padding:7px 8px;margin-bottom:10px;border-radius:7px;cursor:pointer}
+  .homerow:hover{background:var(--hover)}
+  .homerow .hint{margin-left:auto;font-size:12px;color:var(--ink-3)}
+  .btn{display:inline-flex;align-items:center;gap:6px;font:inherit;font-size:13.5px;font-weight:600;border-radius:8px;padding:8px 14px;border:1px solid transparent;cursor:pointer}
+  .btn-primary{background:var(--primary);color:#fff}
+  /* sidebar */
+  .nav{display:flex;align-items:center;gap:9px;font-size:13.5px;color:var(--ink-2);padding:6px 9px;border-radius:7px;cursor:pointer}
+  .nav.active{background:var(--hover);color:var(--ink);font-weight:600}
+  .nav .ico{width:18px;text-align:center}
+  .tree{font-size:13px;color:var(--ink-2);padding:5px 9px 5px 14px;border-radius:7px;cursor:pointer}
+  .ws{display:flex;align-items:center;gap:8px;padding:8px 9px;border-radius:7px;background:var(--hover);font-size:13.5px;font-weight:600}
+  .ws .av{width:20px;height:20px;border-radius:6px;background:var(--c1);color:#fff;display:grid;place-items:center;font-size:11px;font-weight:700}
+  .label{font-size:11px;font-weight:700;color:var(--ink-3);letter-spacing:.04em;text-transform:uppercase;padding:0 9px;margin:14px 0 6px}
+  /* topic bar */
+  .topic{display:flex;align-items:center;justify-content:space-between;padding:11px 22px;border-bottom:1px solid var(--border)}
+  .crumb{font-size:13.5px;color:var(--ink-2)}
+  .ava{width:26px;height:26px;border-radius:50%;background:var(--c1);color:#fff;display:grid;place-items:center;font-size:11px;font-weight:700}
+  /* tabs */
+  .tab{font-size:14px;font-weight:600;color:var(--ink-3);padding:9px 2px;border-bottom:2px solid transparent;cursor:pointer}
+  .tab.active{color:var(--ink);border-color:var(--primary)}
+  .tab .n{color:var(--ink-3);font-weight:500}
+  /* trip card */
+  .tcard{border:1px solid var(--border);border-radius:10px;overflow:hidden;background:var(--paper);cursor:pointer}
+  .tcard .cover{height:96px;background:linear-gradient(135deg,#cfe0f5,#e7d9c6);position:relative}
+  .tcard .more{position:absolute;top:8px;right:8px;width:24px;height:24px;border-radius:6px;background:rgba(255,255,255,.85);display:grid;place-items:center;color:var(--ink-2);font-size:14px}
+  .tcard .body{padding:12px 13px 13px}
+  .tcard .ttl{font-size:14.5px;font-weight:700}
+  .tcard .sub{font-size:12.5px;color:var(--ink-3);margin-top:3px}
+  .tcard .row{display:flex;align-items:center;justify-content:space-between;margin-top:11px}
+  .badge{display:inline-flex;align-items:center;gap:4px;border-radius:5px;padding:2px 8px;font-size:11.5px;font-weight:600}
+  .badge.up{background:var(--t-blue-bg);color:var(--t-blue-fg)}
+  .badge.now{background:var(--t-yellow-bg);color:var(--t-yellow-fg)}
+  .badge.done{background:var(--t-green-bg);color:var(--t-green-fg)}
+  .badge .dot{width:5px;height:5px;border-radius:50%;background:currentColor}
+  .stack{display:flex}
+  .stack .s{width:22px;height:22px;border-radius:50%;border:2px solid var(--paper);display:grid;place-items:center;font-size:10px;font-weight:700;color:#fff;margin-left:-6px}
+  .stack .s:first-child{margin-left:0}
+  .newcard{border:1.5px dashed var(--border-2);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--ink-3);font-size:13.5px;font-weight:600;min-height:188px;cursor:pointer}
+  .state-note{font-size:12px;color:var(--ink-3);margin:10px 2px 0}
+  .state-note b{color:var(--ink-2);font-weight:600}
+</style>
+</head>
+<body>
+<div class="board">
+  <h1>S7 마이페이지 <code>/mypage</code> — 앱 셸(사이드바+토픽바) 첫 등장 · 내/참여 여행 · 상태태그</h1>
+  <p class="meta">디자인시스템 v0.3 토큰 · 좌=데스크탑(셸), 우=모바일(사이드바→햄버거). 이 셸을 S3·S6·S8·S9가 재사용.</p>
+
+  <div style="display:flex;gap:40px;flex-wrap:wrap;align-items:flex-start">
+
+    <!-- ============ 데스크탑 ============ -->
+    <div style="flex:1 1 860px;min-width:820px">
+      <div class="frame-label">데스크탑 ≥1024 · 앱 셸</div>
+      <div class="frame" style="display:flex;height:640px">
+        <!-- 사이드바 228px -->
+        <aside style="width:228px;flex:0 0 228px;background:var(--sidebar);border-right:1px solid var(--border);padding:14px 12px;display:flex;flex-direction:column">
+          <div class="homerow" title="홈으로 가기"><span class="logo"><span class="mark">W</span>어디갈래?</span><span class="hint">홈 ⌂</span></div>
+          <div style="display:flex;flex-direction:column;gap:2px">
+            <div class="nav"><span class="ico">🏠</span> 홈</div>
+            <div class="nav active"><span class="ico">🧳</span> 내 여행</div>
+            <div class="nav"><span class="ico">👥</span> 모임</div>
+            <div class="nav"><span class="ico">🔍</span> 관광지 검색</div>
+          </div>
+          <div style="margin-top:auto;display:flex;align-items:center;gap:8px;padding:8px 4px;font-size:13px;color:var(--ink-2)">
+            <span class="ava" style="width:24px;height:24px">지</span> 지우님
+          </div>
+        </aside>
+
+        <!-- 본문 -->
+        <section style="flex:1;min-width:0;display:flex;flex-direction:column">
+          <div class="topic">
+            <span class="crumb">내 여행</span>
+            <span class="ava">지</span>
+          </div>
+          <div style="flex:1;overflow:auto;padding:26px 30px">
+            <!-- 헤더 -->
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
+              <h2 style="font-size:26px;font-weight:800;margin:0">내 여행</h2>
+              <button class="btn btn-primary">＋ 새 여행 만들기</button>
+            </div>
+            <!-- 탭 -->
+            <div style="display:flex;gap:20px;border-bottom:1px solid var(--border);margin-bottom:20px">
+              <div class="tab active">내 여행 <span class="n">3</span></div>
+              <div class="tab">참여중 여행 <span class="n">2</span></div>
+            </div>
+            <!-- 카드 그리드 -->
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
+              <div class="tcard">
+                <div class="cover"><div class="more">⋯</div></div>
+                <div class="body">
+                  <div class="ttl">부산 2박3일</div>
+                  <div class="sub">7/1 – 7/3 · 3명</div>
+                  <div class="row">
+                    <span class="badge now"><span class="dot"></span>진행중</span>
+                    <div class="stack"><span class="s" style="background:var(--c1)">지</span><span class="s" style="background:var(--c2)">민</span><span class="s" style="background:var(--c3)">하</span></div>
+                  </div>
+                </div>
+              </div>
+              <div class="tcard">
+                <div class="cover" style="background:linear-gradient(135deg,#d9e8d4,#cfe0f5)"><div class="more">⋯</div></div>
+                <div class="body">
+                  <div class="ttl">제주 한 달살기</div>
+                  <div class="sub">8/10 – 8/14 · 2명</div>
+                  <div class="row">
+                    <span class="badge up"><span class="dot"></span>예정</span>
+                    <div class="stack"><span class="s" style="background:var(--c1)">지</span><span class="s" style="background:var(--c2)">현</span></div>
+                  </div>
+                </div>
+              </div>
+              <div class="tcard">
+                <div class="cover" style="background:linear-gradient(135deg,#e7d9c6,#f0d9e2)"><div class="more">⋯</div></div>
+                <div class="body">
+                  <div class="ttl">경주 벚꽃 여행</div>
+                  <div class="sub">4/5 – 4/6 · 4명</div>
+                  <div class="row">
+                    <span class="badge done"><span class="dot"></span>완료</span>
+                    <div class="stack"><span class="s" style="background:var(--c1)">지</span><span class="s" style="background:var(--c2)">민</span><span class="s" style="background:var(--c3)">하</span><span class="s" style="background:var(--ink-3)">+1</span></div>
+                  </div>
+                </div>
+              </div>
+              <div class="newcard">＋ 새 여행 만들기</div>
+            </div>
+          </div>
+        </section>
+      </div>
+      <p class="state-note"><b>상태태그</b> 예정=blue · 진행중=yellow · 완료=green(점+라벨 병행). <b>빈</b> "아직 계획이 없어요! 첫 여행을 만들어볼까요?" · <b>삭제</b> ⋯→확인 다이얼로그.</p>
+    </div>
+
+    <!-- ============ 모바일 ============ -->
+    <div style="flex:0 0 auto">
+      <div class="frame-label">모바일 &lt;768 · 사이드바→햄버거</div>
+      <div class="frame" style="width:390px;height:640px;display:flex;flex-direction:column">
+        <!-- 앱바 -->
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:13px 16px;border-bottom:1px solid var(--border)">
+          <div style="display:flex;align-items:center;gap:12px"><span style="font-size:19px">☰</span><span style="font-size:16px;font-weight:700">내 여행</span></div>
+          <span class="ava">지</span>
+        </div>
+        <!-- 탭 (상단 고정) -->
+        <div style="display:flex;gap:18px;padding:0 16px;border-bottom:1px solid var(--border)">
+          <div class="tab active" style="font-size:13.5px">내 여행 <span class="n">3</span></div>
+          <div class="tab" style="font-size:13.5px">참여중 <span class="n">2</span></div>
+        </div>
+        <!-- 카드 1열 -->
+        <div style="flex:1;overflow:auto;padding:16px;display:flex;flex-direction:column;gap:13px">
+          <div class="tcard">
+            <div class="cover"><div class="more">⋯</div></div>
+            <div class="body">
+              <div class="ttl">부산 2박3일</div>
+              <div class="sub">7/1 – 7/3 · 3명</div>
+              <div class="row"><span class="badge now"><span class="dot"></span>진행중</span><div class="stack"><span class="s" style="background:var(--c1)">지</span><span class="s" style="background:var(--c2)">민</span><span class="s" style="background:var(--c3)">하</span></div></div>
+            </div>
+          </div>
+          <div class="tcard">
+            <div class="cover" style="background:linear-gradient(135deg,#d9e8d4,#cfe0f5)"><div class="more">⋯</div></div>
+            <div class="body">
+              <div class="ttl">제주 한 달살기</div>
+              <div class="sub">8/10 – 8/14 · 2명</div>
+              <div class="row"><span class="badge up"><span class="dot"></span>예정</span><div class="stack"><span class="s" style="background:var(--c1)">지</span><span class="s" style="background:var(--c2)">현</span></div></div>
+            </div>
+          </div>
+        </div>
+        <!-- FAB -->
+        <div style="position:relative"><button class="btn btn-primary" style="position:absolute;right:16px;bottom:16px;box-shadow:0 6px 16px -4px rgba(44,111,227,.5)">＋ 새 여행</button></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

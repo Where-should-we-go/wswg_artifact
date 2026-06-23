@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>어디갈래? — S4 관광지 상세</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+<style>
+  :root{
+    --paper:#fff; --sidebar:#fbfbfa; --sunken:#f7f6f3; --hover:#f1f1ef;
+    --border:#ededeb; --border-2:#e3e2df;
+    --ink:#37352f; --ink-2:#6b6a65; --ink-3:#9b9a95;
+    --primary:#2c6fe3; --primary-soft:#eaf1fd; --primary-ink:#1f5fcc;
+    --t-blue-bg:#e3eef8; --t-blue-fg:#1f5c8f;
+    --font:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo",ui-sans-serif,system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:#e9e8e4;color:var(--ink);font-family:var(--font);-webkit-font-smoothing:antialiased}
+  .board{max-width:1400px;margin:0 auto;padding:32px 24px 80px}
+  .board h1{font-size:15px;font-weight:700;color:var(--ink-2);margin:0 0 4px}
+  .board .meta{font-size:12.5px;color:var(--ink-3);margin:0 0 28px}
+  .frame-label{font-size:12px;font-weight:700;color:var(--ink-3);letter-spacing:.04em;text-transform:uppercase;margin:28px 0 10px}
+  .frame{background:var(--paper);border:1px solid var(--border-2);border-radius:12px;overflow:hidden}
+  .logo{display:inline-flex;align-items:center;gap:7px;font-weight:800;letter-spacing:-.02em}
+  .logo .mark{width:20px;height:20px;border-radius:6px;background:var(--primary);color:#fff;display:grid;place-items:center;font-size:11px;font-weight:800}
+  .homerow{display:flex;align-items:center;padding:7px 8px;margin-bottom:10px;border-radius:7px;cursor:pointer}
+  .homerow:hover{background:var(--hover)}
+  .homerow .hint{margin-left:auto;font-size:12px;color:var(--ink-3)}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;font:inherit;font-size:14px;font-weight:600;border-radius:8px;padding:11px 16px;border:1px solid transparent;cursor:pointer}
+  .btn-primary{background:var(--primary);color:#fff}
+  .nav{display:flex;align-items:center;gap:9px;font-size:13.5px;color:var(--ink-2);padding:6px 9px;border-radius:7px;cursor:pointer}
+  .nav.active{background:var(--hover);color:var(--ink);font-weight:600}
+  .nav .ico{width:18px;text-align:center}
+  .tree{font-size:13px;color:var(--ink-2);padding:5px 9px 5px 14px}
+  .ws{display:flex;align-items:center;gap:8px;padding:8px 9px;border-radius:7px;background:var(--hover);font-size:13.5px;font-weight:600}
+  .ws .av{width:20px;height:20px;border-radius:6px;background:var(--primary);color:#fff;display:grid;place-items:center;font-size:11px;font-weight:700}
+  .topic{display:flex;align-items:center;justify-content:space-between;padding:11px 22px;border-bottom:1px solid var(--border)}
+  .crumb{font-size:13.5px;color:var(--ink-2)}
+  .crumb b{color:var(--ink);font-weight:600}
+  .ava{width:26px;height:26px;border-radius:50%;background:var(--primary);color:#fff;display:grid;place-items:center;font-size:11px;font-weight:700}
+  .tag{display:inline-flex;align-items:center;border-radius:5px;padding:2px 8px;font-size:11.5px;font-weight:600;background:var(--t-blue-bg);color:var(--t-blue-fg)}
+  .info{display:flex;gap:9px;font-size:13.5px;color:var(--ink-2);padding:7px 0;border-bottom:1px solid var(--border)}
+  .info .k{width:64px;flex:0 0 64px;color:var(--ink-3)}
+  .info a{color:var(--primary-ink);text-decoration:none}
+  .map{height:170px;border-radius:8px;background:linear-gradient(135deg,#dfe9f6,#eee7d8);display:grid;place-items:center;font-size:30px;position:relative}
+  .ov{font-size:14px;line-height:1.75;color:var(--ink);max-width:60ch}
+  .state-note{font-size:12px;color:var(--ink-3);margin:10px 2px 0}
+  .state-note b{color:var(--ink-2);font-weight:600}
+</style>
+</head>
+<body>
+<div class="board">
+  <h1>S4 관광지 상세 <code>/attractions/{id}</code> — 히어로 + 2열(overview / 담기·지도)</h1>
+  <p class="meta">디자인시스템 v0.3 · 좌=데스크탑(셸), 우=모바일(하단 고정 담기 바). 검색·인기에서 진입.</p>
+
+  <div style="display:flex;gap:40px;flex-wrap:wrap;align-items:flex-start">
+
+    <!-- ============ 데스크탑 ============ -->
+    <div style="flex:1 1 860px;min-width:820px">
+      <div class="frame-label">데스크탑 ≥1024</div>
+      <div class="frame" style="display:flex;height:680px">
+        <aside style="width:228px;flex:0 0 228px;background:var(--sidebar);border-right:1px solid var(--border);padding:14px 12px;display:flex;flex-direction:column">
+          <div class="homerow" title="홈으로 가기"><span class="logo"><span class="mark">W</span>어디갈래?</span><span class="hint">홈 ⌂</span></div>
+          <div style="display:flex;flex-direction:column;gap:2px">
+            <div class="nav"><span class="ico">🏠</span> 홈</div>
+            <div class="nav"><span class="ico">🧳</span> 내 여행</div>
+            <div class="nav"><span class="ico">👥</span> 모임</div>
+            <div class="nav active"><span class="ico">🔍</span> 관광지 검색</div>
+          </div>
+        </aside>
+
+        <section style="flex:1;min-width:0;display:flex;flex-direction:column">
+          <div class="topic"><span class="crumb">관광지 검색 › <b>경복궁</b></span><span class="ava">지</span></div>
+          <div style="flex:1;overflow:auto">
+            <!-- 히어로 이미지 -->
+            <div style="height:260px;background:linear-gradient(135deg,#cfe0f5,#e7d9c6)"></div>
+            <div style="padding:22px 30px 36px">
+              <!-- 제목 -->
+              <div style="display:flex;align-items:center;gap:10px">
+                <h2 style="font-size:30px;font-weight:800;margin:0">경복궁</h2>
+                <span class="tag">관광지</span>
+              </div>
+              <div style="font-size:13.5px;color:var(--ink-3);margin-top:6px">서울특별시 종로구 사직로 161</div>
+
+              <!-- 2열 -->
+              <div style="display:grid;grid-template-columns:1.9fr 1fr;gap:28px;margin-top:24px">
+                <!-- 좌: 정보 + overview -->
+                <div>
+                  <div class="info"><span class="k">전화</span><a href="#">02-3700-3900</a></div>
+                  <div class="info"><span class="k">홈페이지</span><a href="#">royalpalace.go.kr ↗</a></div>
+                  <div class="info"><span class="k">휴무</span><span>화요일</span></div>
+                  <h3 style="font-size:16px;font-weight:700;margin:22px 0 10px">소개</h3>
+                  <p class="ov">조선 왕조 제일의 법궁이에요. 1395년에 창건된 후 임진왜란으로 소실됐다가 고종 때 중건됐어요. 광화문·근정전·경회루로 이어지는 웅장한 동선과 수문장 교대식이 볼거리예요. 한복을 입으면 무료로 입장할 수 있어요.</p>
+                </div>
+                <!-- 우: sticky 담기 + 지도 -->
+                <div>
+                  <div style="position:sticky;top:0;border:1px solid var(--border);border-radius:10px;padding:14px;background:var(--paper)">
+                    <button class="btn btn-primary" style="width:100%">＋ 내 여행에 추가</button>
+                    <div style="font-size:12px;color:var(--ink-3);text-align:center;margin:8px 0 14px">담을 여행을 골라요</div>
+                    <div class="map">📍</div>
+                    <div style="font-size:12.5px;color:var(--ink-2);margin-top:10px;line-height:1.5">서울 종로구 사직로 161<br>지하철 3호선 경복궁역 5번 출구</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+      <p class="state-note"><b>상태</b> — 이미지 없으면 옅은 플레이스홀더 "아직 사진이 없어요." · 없는 id 404 "찾는 관광지가 없어요. 다른 곳을 둘러볼까요?" · 게스트가 담기 클릭 → "내 여행에 담으려면 로그인이 필요해요".</p>
+    </div>
+
+    <!-- ============ 모바일 ============ -->
+    <div style="flex:0 0 auto">
+      <div class="frame-label">모바일 &lt;768 · 하단 고정 담기</div>
+      <div class="frame" style="width:390px;height:680px;display:flex;flex-direction:column;position:relative">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:13px 16px;border-bottom:1px solid var(--border)">
+          <div style="display:flex;align-items:center;gap:12px"><span style="font-size:18px">‹</span><span style="font-size:15px;font-weight:700">경복궁</span></div>
+          <span style="font-size:17px;color:var(--ink-2)">↗</span>
+        </div>
+        <div style="flex:1;overflow:auto;padding-bottom:74px">
+          <div style="height:200px;background:linear-gradient(135deg,#cfe0f5,#e7d9c6)"></div>
+          <div style="padding:16px 18px">
+            <div style="display:flex;align-items:center;gap:9px"><h2 style="font-size:23px;font-weight:800;margin:0">경복궁</h2><span class="tag">관광지</span></div>
+            <div style="font-size:13px;color:var(--ink-3);margin-top:5px">서울 종로구 사직로 161</div>
+            <div style="margin-top:14px">
+              <div class="info"><span class="k">전화</span><a href="#">02-3700-3900</a></div>
+              <div class="info"><span class="k">홈페이지</span><a href="#">royalpalace.go.kr ↗</a></div>
+              <div class="info"><span class="k">휴무</span><span>화요일</span></div>
+            </div>
+            <h3 style="font-size:15px;font-weight:700;margin:18px 0 9px">소개</h3>
+            <p class="ov" style="font-size:13.5px">조선 왕조 제일의 법궁이에요. 광화문·근정전·경회루로 이어지는 웅장한 동선과 수문장 교대식이 볼거리예요. 한복을 입으면 무료 입장이에요.</p>
+            <div class="map" style="height:150px;margin-top:16px">📍</div>
+          </div>
+        </div>
+        <!-- 하단 고정 담기 바 -->
+        <div style="position:absolute;left:0;right:0;bottom:0;background:var(--paper);border-top:1px solid var(--border);padding:11px 16px">
+          <button class="btn btn-primary" style="width:100%;min-height:46px">＋ 내 여행에 추가</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>
