@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>어디갈래?(WSWG) — 발표자료</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" />
+<link rel="stylesheet" as="style" crossorigin
+  href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+<style>
+  :root{
+    --paper:#FFFFFF; --bg:#FAF9F7; --sidebar:#FBFBFA; --sunken:#F7F6F3;
+    --hover:#F1F1EF; --line:#EDEDEB; --line-2:#E3E2DF;
+    --ink:#37352F; --ink-2:#6B6A65; --ink-3:#9B9A95;
+    --brand:#2C6FE3; --brand-ink:#1F5FCC; --brand-soft:#EAF1FD;
+    --t-blue-bg:#E3EEF8; --t-blue:#1F5C8F;
+    --t-orange-bg:#FBEADB; --t-orange:#9A5B17;
+    --t-gray-bg:#EDEDEB; --t-gray:#605F5A;
+    --t-purple-bg:#EEE7F6; --t-purple:#6A4B97;
+    --t-yellow-bg:#FAF1D2; --t-yellow:#86691A;
+    --t-green-bg:#E5F0E4; --t-green:#3F6B43;
+    --t-red-bg:#FBE6E4; --t-red:#B0413A;
+    --shadow:0 1px 2px rgba(15,15,15,.04),0 8px 24px rgba(15,15,15,.06);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:"Pretendard Variable",Pretendard,-apple-system,system-ui,sans-serif;
+    background:var(--bg); color:var(--ink);
+    display:flex; align-items:center; justify-content:center;
+    min-height:100vh; -webkit-font-smoothing:antialiased; letter-spacing:-.01em;
+  }
+  #deck{ width:100%; }
+  .slide{
+    width:1280px; height:720px; margin:0 auto; background:var(--paper);
+    position:relative; overflow:hidden; display:none;
+    padding:56px 72px 72px; box-shadow:var(--shadow); border:1px solid var(--line);
+  }
+  .slide.active{ display:flex; flex-direction:column; }
+
+  .eyebrow{ font-size:14px; font-weight:700; color:var(--brand); letter-spacing:.04em; text-transform:uppercase; }
+  h1.title{ font-size:40px; font-weight:800; line-height:1.18; letter-spacing:-.025em; }
+  h2.head{ font-size:30px; font-weight:800; letter-spacing:-.02em; margin-bottom:4px; }
+  .sub{ font-size:16px; color:var(--ink-2); font-weight:500; line-height:1.45; }
+  .slide-head{ margin-bottom:20px; flex:none; }
+  .slide-head .kicker{ display:flex; align-items:center; gap:9px; margin-bottom:8px; }
+  .num-chip{ font-size:13px; font-weight:700; color:var(--ink-3); }
+  .body{ flex:1; min-height:0; display:flex; flex-direction:column; justify-content:center; }
+
+  .foot{ position:absolute; left:72px; right:72px; bottom:22px; display:flex; justify-content:space-between;
+    align-items:center; font-size:12px; color:var(--ink-3); font-weight:600; border-top:1px solid var(--line); padding-top:11px;}
+  .foot .brand-mini{ display:flex; align-items:center; gap:7px; }
+  .logo-mark{ width:22px; height:22px; border-radius:6px; background:var(--brand); color:#fff;
+    font-weight:800; font-size:13px; display:grid; place-items:center; }
+
+  #progress{ position:fixed; top:0; left:0; height:3px; background:var(--brand); z-index:50; transition:width .25s ease; }
+  #hud{ position:fixed; bottom:14px; right:18px; z-index:50; font-size:12px; color:var(--ink-3);
+    background:var(--paper); border:1px solid var(--line-2); border-radius:999px; padding:5px 12px; font-weight:600; box-shadow:var(--shadow);}
+  .hint{ position:fixed; bottom:14px; left:18px; z-index:50; font-size:11.5px; color:var(--ink-3); }
+
+  .grid{ display:grid; gap:16px; }
+  .card{ background:var(--paper); border:1px solid var(--line-2); border-radius:14px; padding:18px 20px; }
+  .card.soft{ background:var(--sunken); border-color:var(--line); }
+  .card .ico{ font-size:22px; }
+  .card h3{ font-size:17px; font-weight:700; margin:7px 0 5px; letter-spacing:-.01em; }
+  .card p{ font-size:13.5px; color:var(--ink-2); line-height:1.5; }
+  .pill{ display:inline-flex; align-items:center; gap:6px; font-size:13px; font-weight:700;
+    padding:4px 11px; border-radius:999px; background:var(--brand-soft); color:var(--brand-ink); }
+  .tag{ display:inline-block; font-size:12px; font-weight:700; padding:3px 9px; border-radius:7px; margin:1px; }
+  .t-blue{background:var(--t-blue-bg);color:var(--t-blue)} .t-orange{background:var(--t-orange-bg);color:var(--t-orange)}
+  .t-gray{background:var(--t-gray-bg);color:var(--t-gray)} .t-purple{background:var(--t-purple-bg);color:var(--t-purple)}
+  .t-yellow{background:var(--t-yellow-bg);color:var(--t-yellow)} .t-green{background:var(--t-green-bg);color:var(--t-green)}
+  .t-red{background:var(--t-red-bg);color:var(--t-red)}
+
+  table.tbl{ width:100%; border-collapse:collapse; font-size:14px; }
+  table.tbl th,table.tbl td{ text-align:left; padding:10px 13px; border-bottom:1px solid var(--line); }
+  table.tbl th{ font-weight:700; color:var(--ink-2); font-size:12.5px; background:var(--sunken); }
+  table.tbl tr.me td{ background:var(--brand-soft); font-weight:600; }
+  table.tbl td.c,table.tbl th.c{ text-align:center; }
+  .ok{ color:var(--brand); font-weight:800; } .no{ color:var(--ink-3); } .mid{ color:var(--t-orange); font-weight:700; }
+
+  .browser{ border:1px solid var(--line-2); border-radius:12px; overflow:hidden; box-shadow:var(--shadow); background:#fff; }
+  .browser .bar{ height:28px; background:var(--sunken); border-bottom:1px solid var(--line); display:flex; align-items:center; gap:6px; padding:0 12px; }
+  .browser .dot{ width:9px; height:9px; border-radius:50%; background:var(--line-2); }
+  .browser img{ width:100%; display:block; max-height:418px; object-fit:cover; object-position:top center; }
+
+  ul.clean{ list-style:none; display:flex; flex-direction:column; gap:10px; }
+  ul.clean li{ font-size:15px; line-height:1.5; padding-left:24px; position:relative; color:var(--ink); }
+  ul.clean li::before{ content:""; position:absolute; left:4px; top:8px; width:8px; height:8px; border-radius:3px; background:var(--brand); }
+  ul.clean li b{ font-weight:700; } .muted{ color:var(--ink-2); }
+  ul.sm li{ font-size:13.5px; } ul.sm li::before{ top:7px; width:6px; height:6px; }
+
+  /* node / arch */
+  .node{ border:1px solid var(--line-2); border-radius:11px; padding:11px 14px; background:var(--paper); font-weight:700; font-size:14px; text-align:center; box-shadow:var(--shadow); }
+  .node small{ display:block; font-weight:500; color:var(--ink-2); font-size:11.5px; margin-top:3px; line-height:1.35; }
+  .node.brand{ background:var(--brand); color:#fff; border-color:var(--brand); } .node.brand small{ color:#dCE7FB; }
+  .node.ext{ background:var(--sunken); } .node.redis{ background:#FCEEEC; border-color:#E7B7B1; } .node.db{ background:#EAF3EC; border-color:#BCD8C2; }
+  .varrow{ text-align:center; color:var(--ink-3); font-size:16px; font-weight:800; line-height:1; }
+  .vlabel{ font-size:11px; color:var(--ink-3); font-weight:600; text-align:center; }
+
+  /* layered system diagram */
+  .layer{ border:1px dashed var(--line-2); border-radius:14px; padding:12px 16px; position:relative; }
+  .layer .lname{ position:absolute; top:-9px; left:16px; background:var(--paper); padding:0 8px; font-size:11px; font-weight:800; letter-spacing:.06em; color:var(--brand); }
+
+  /* steps / timeline */
+  .step{ position:relative; padding:14px 16px 14px 50px; border:1px solid var(--line-2); border-radius:13px; background:var(--paper); }
+  .step .n{ position:absolute; left:13px; top:13px; width:26px; height:26px; border-radius:8px; background:var(--brand); color:#fff; font-weight:800; display:grid; place-items:center; font-size:14px;}
+  .step h4{ font-size:15px; font-weight:700; margin-bottom:2px; } .step p{ font-size:12.5px; color:var(--ink-2); line-height:1.45; }
+
+  /* problem/solution */
+  .ps{ border:1px solid var(--line-2); border-radius:13px; overflow:hidden; }
+  .ps .p{ background:var(--t-red-bg); padding:11px 15px; font-size:13.5px; color:var(--t-red); font-weight:700; display:flex; gap:8px; align-items:flex-start;}
+  .ps .s{ padding:11px 15px; font-size:13px; color:var(--ink-2); line-height:1.5; }
+  .ps .s b{ color:var(--ink); }
+
+  /* code / formula */
+  .code{ font-family:"SF Mono",ui-monospace,Menlo,monospace; background:#1f2430; color:#e6e9ef; border-radius:12px; padding:16px 18px; font-size:13px; line-height:1.7; overflow:hidden; }
+  .code .c1{color:#7fb2ff} .code .c2{color:#7ee0a8} .code .c3{color:#f6c177} .code .cm{color:#7c8499}
+  .formula{ background:var(--sunken); border:1px solid var(--line); border-radius:12px; padding:18px 20px; text-align:center; font-size:18px; font-weight:600; color:var(--ink); }
+  .formula .big{ font-size:24px; color:var(--brand); font-weight:800; }
+  .note{ font-size:12px; color:var(--ink-3); margin-top:8px; } .note.center{text-align:center}
+  .kbd{ background:var(--sunken); border:1px solid var(--line-2); border-radius:6px; padding:1px 7px; font-size:12px; font-weight:600; }
+
+  /* gantt */
+  .gantt{ font-size:12px; }
+  .gantt .row{ display:grid; grid-template-columns:166px 1fr; align-items:center; gap:10px; margin-bottom:7px; }
+  .gantt .lab{ font-weight:600; color:var(--ink-2); }
+  .gantt .track{ position:relative; height:21px; background:var(--sunken); border-radius:6px; }
+  .gantt .bar{ position:absolute; height:21px; border-radius:6px; background:var(--brand); top:0; display:flex; align-items:center; padding-left:8px; color:#fff; font-weight:700; font-size:11px; white-space:nowrap; }
+  .gantt .bar.b2{ background:#7DA8EE; } .gantt .bar.b3{ background:var(--t-green); }
+  .gantt .axis{ display:grid; grid-template-columns:166px 1fr; gap:10px; color:var(--ink-3); font-weight:600; margin-top:4px;}
+  .gantt .axis .ticks{ display:flex; justify-content:space-between; }
+
+  .life{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+  .life .ph{ border:1px solid var(--line-2); border-radius:16px; padding:20px; }
+  .life .ph .big{ font-size:12px; font-weight:800; color:var(--brand); letter-spacing:.04em;}
+  .life .ph h3{ font-size:21px; font-weight:800; margin:5px 0 7px; }
+  .life .ph p{ font-size:13px; color:var(--ink-2); line-height:1.5;} .life .ph .emoji{ font-size:28px; }
+
+  .cover{ justify-content:center; }
+  .cover .badge{ display:inline-flex; gap:9px; align-items:center; align-self:flex-start; }
+  .cover h1{ font-size:62px; font-weight:800; letter-spacing:-.04em; line-height:1.06; margin:22px 0 10px; }
+  .cover .tagline{ font-size:21px; color:var(--ink-2); font-weight:500; max-width:760px; line-height:1.5; }
+  .cover .meta{ margin-top:38px; display:flex; gap:30px; font-size:15px; color:var(--ink-2); }
+  .cover .meta b{ color:var(--ink); }
+  .cover .deco{ position:absolute; right:-120px; top:-120px; width:520px; height:520px; border-radius:50%;
+    background:radial-gradient(circle at 30% 30%, #EAF1FD, transparent 70%); }
+  .cover .deco2{ position:absolute; right:60px; bottom:-80px; width:340px; height:340px; border-radius:50%;
+    background:radial-gradient(circle at 30% 30%, #F4EAFB, transparent 70%); }
+
+  @media print{
+    @page{ size:1280px 720px; margin:0; }
+    body{ background:#fff; display:block; }
+    #progress,#hud,.hint{ display:none !important; }
+    .slide{ display:flex !important; page-break-after:always; box-shadow:none; border:none; margin:0; transform:none !important; }
+  }
+</style>
+</head>
+<body>
+<div id="progress"></div>
+<div id="deck">
+
+  <!-- 1. COVER -->
+  <section class="slide active cover">
+    <div class="deco"></div><div class="deco2"></div>
+    <div class="badge"><span class="logo-mark" style="width:34px;height:34px;border-radius:9px;font-size:18px">W</span>
+      <span style="font-weight:800;font-size:19px">어디갈래?</span></div>
+    <h1>어디갈래?<br/><span style="color:var(--brand)">Where Should We Go</span></h1>
+    <p class="tagline">여행 계획을 <b style="color:var(--ink)">자동으로 생성</b>하고, <b style="color:var(--ink)">함께 수정</b>하고,
+      <b style="color:var(--ink)">추억으로 남기는</b> 협업형 여행 플래너</p>
+    <div class="meta">
+      <div>SSAFY 15기 · A10 <b>8Where</b></div><div>팀원 · <b>TODO</b></div><div>발표 · <b>2026-06-23</b></div>
+    </div>
+  </section>
+
+  <!-- 2. AGENDA -->
+  <section class="slide">
+    <div class="slide-head"><div class="kicker"><span class="eyebrow">Contents</span></div><h2 class="head">목차</h2></div>
+    <div class="body"><div class="grid" style="grid-template-columns:repeat(3,1fr); gap:16px;">
+      <div class="card soft"><h3 style="color:var(--brand);font-size:15px">01 · 기획</h3>
+        <p>기획 배경 · 추진 계획 · 시장 분석</p></div>
+      <div class="card soft"><h3 style="color:var(--brand);font-size:15px">02 · 개발 결과 · 환경</h3>
+        <p>핵심 기능 · 기술 스택</p></div>
+      <div class="card soft"><h3 style="color:var(--brand);font-size:15px">03 · 아키텍처 · 데이터</h3>
+        <p>시스템 구조 · 분산 환경 · ERD · 데이터 모델</p></div>
+      <div class="card soft"><h3 style="color:var(--brand);font-size:15px">04 · 핵심 기술</h3>
+        <p>TourAPI 적재 · AI 벡터 검색 · 실시간 동기화 · 시연</p></div>
+      <div class="card soft"><h3 style="color:var(--brand);font-size:15px">05 · 트러블슈팅</h3>
+        <p>DB 전환 · 메시지 유실 해결</p></div>
+      <div class="card soft"><h3 style="color:var(--brand);font-size:15px">06 · 마무리</h3>
+        <p>기대 효과 · 개발 후기 · AI 사용 보고서</p></div>
+    </div></div>
+    <div class="foot"><div class="brand-mini"><span class="logo-mark">W</span> 어디갈래? · WSWG</div><div>SSAFY Final Project</div></div>
+  </section>
+
+  <!-- 3. 기획 배경 -->
+  <section class="slide">
+    <div class="slide-head"><div class="kicker"><span class="num-chip">01</span><span class="eyebrow">Background</span></div>
+      <h2 class="head">기획 배경 · 목표</h2>
+      <p class="sub">여행은 <b>계획 → 공유 → 기억</b> 전 과정이 번거롭다. 우리는 이 3단계를 한 서비스로 잇는다.</p></div>
+    <div class="body"><div style="display:grid; grid-template-columns:0.85fr 1.15fr; gap:30px; align-items:center;">
+      <div>
+        <div class="pill" style="margin-bottom:13px">😮‍💨 Pain Point</div>
+        <ul class="clean">
+          <li>정보 탐색 · 동선 · 합의에 <b>시간이 많이 든다</b></li>
+          <li>단톡 · 메모장 · 지도를 오가며 <b>버전이 흩어진다</b></li>
+          <li>다녀온 사진 · 기록이 <b>한곳에 모이지 않는다</b></li>
+        </ul>
+      </div>
+      <div class="life">
+        <div class="ph"><div class="emoji">🗺️</div><div class="big">PLAN</div><h3>계획</h3><p><b>AI가 일정 자동 생성</b></p></div>
+        <div class="ph"><div class="emoji">👥</div><div class="big">SHARE</div><h3>공유</h3><p><b>실시간 공동 편집</b></p></div>
+        <div class="ph"><div class="emoji">📸</div><div class="big">MEMORY</div><h3>기억</h3><p><b>발자취 지도</b>로 추억</p></div>
+      </div>
+    </div></div>
+    <div class="foot"><div class="brand-mini"><span class="logo-mark">W</span> 어디갈래? · WSWG</div><div>01 · 기획 배경</div></div>
+  </section>
+
+  <!-- 4. 추진 계획 -->
+  <section class="slide">
+    <div class="slide-head"><div class="kicker"><span class="num-chip">01</span><span class="eyebrow">Plan</span></div>
+      <h2 class="head">추진 계획</h2>
+      <p class="sub">2026.06.09 ~ 06.23 · 15일 · 풀스택 2명 (Dev A 계획 / Dev B 협업·미디어)</p></div>
+    <div class="body"><div class="gantt">
+      <div class="row"><span class="lab">F0 DB 마이그레이션·인프라</span><div class="track"><div class="bar b2" style="left:0%;width:13%">D1–D2</div></div></div>
+      <div class="row"><span class="lab">F1~F4 검색·상세·적재</span><div class="track"><div class="bar" style="left:0%;width:20%">D1–D3</div></div></div>
+      <div class="row"><span class="lab">F8 모임·초대</span><div class="track"><div class="bar b2" style="left:6.5%;width:13%">D2–D3</div></div></div>
+      <div class="row"><span class="lab">F5 AI 여행 자동 생성 ⭐</span><div class="track"><div class="bar" style="left:20%;width:7%">BE</div><div class="bar" style="left:40%;width:7%">FE</div></div></div>
+      <div class="row"><span class="lab">F9 실시간 공동 편집 ⭐</span><div class="track"><div class="bar b2" style="left:20%;width:7%">PoC</div><div class="bar b2" style="left:40%;width:14%">동기화</div></div></div>
+      <div class="row"><span class="lab">F6·F7 편집·마이페이지</span><div class="track"><div class="bar" style="left:47%;width:14%">D8–D9</div></div></div>
+      <div class="row"><span class="lab">F10·F11 미디어·발자취 지도 ⭐</span><div class="track"><div class="bar b2" style="left:54%;width:20%">D9–D11</div></div></div>
+      <div class="row"><span class="lab">F12 통합·QA·배포·발표</span><div class="track"><div class="bar b3" style="left:67%;width:33%">D11–D15</div></div></div>
+      <div class="axis"><span></span><div class="ticks"><span>6/9</span><span>M1 6/14</span><span>M2 6/19</span><span>M3 6/22</span><span>6/23 발표</span></div></div>
+    </div></div>
+    <div class="foot"><div class="brand-mini"><span class="logo-mark">W</span> 어디갈래? · WSWG</div><div>01 · 추진 계획 · WBS간트차트.md</div></div>
+  </section>
+
+  <!-- 5. 시장 분석 -->
+  <section class="slide">
+    <div class="slide-head"><div class="kicker"><span class="num-chip">01</span><span class="eyebrow">Market</span></div>
+      <h2 class="head">시장 분석 · 차별화 전략</h2></div>
+    <div class="body" style="gap:16px;">
+      <table class="tbl">
+        <thead><tr><th>서비스</th><th class="c">AI 일정 자동생성</th><th class="c">실시간 공동편집</th><th class="c">발자취 지도</th><th>특징</th></tr></thead>
+        <tbody>
+          <tr><td>트리플 (Triple)</td><td class="c mid">△ 추천</td><td class="c no">✕</td><td class="c mid">△ 타임라인</td><td class="muted">추천 강자, 협업 약함</td></tr>
+          <tr><td>마이리얼트립</td><td class="c no">✕</td><td class="c no">✕</td><td class="c no">✕</td><td class="muted">상품 예약 중심</td></tr>
+          <tr><td>구글맵 타임라인</td><td class="c no">✕</td><td class="c no">✕</td><td class="c mid">△ 자동기록</td><td class="muted">계획 도구 아님</td></tr>
+          <tr class="me"><td>어디갈래? (WSWG)</td><td class="c ok">✅ 의미검색+GPT</td><td class="c ok">✅ WebSocket</td><td class="c ok">✅ 공간데이터</td><td>3단계 통합</td></tr>
+        </tbody>
+      </table>
+      <div class="grid" style="grid-template-columns:repeat(4,1fr); gap:12px;">
+        <div class="card soft"><div class="ico">🔗</div><h3 style="font-size:14px">계획→추억 일원화</h3></div>
+        <div class="card soft"><div class="ico">✍️</div><h3 style="font-size:14px">진짜 동시 편집</h3></div>
+        <div class="card soft"><div class="ico">🧠</div><h3 style="font-size:14px">AI 의미 검색</h3></div>
+        <div class="card soft"><div class="ico">🗺️</div><h3 style="font-size:14px">공간 발자취 지도</h3></div>
+      </div>
+    </div>
+    <div class="foot"><div class="brand-mini"><span class="logo-mark">W</span> 어디갈래? · WSWG</div><div>01 · 시장 분석</div></div>
+  </section>
+
+  <!-- 6. 개발 결과 -->
+  <section class="slide">
+    <div class="slide-head"><div class="kicker"><span class="num-chip">02</span><span class="eyebrow">Result</span></div>
+      <h2 class="head">개발 결과 — 핵심 기능 4종</h2></div>
+    <div class="body" style="gap:14px;">
+      <div class="grid" style="grid-template-columns:1fr 1fr; gap:14px;">
+        <div class="card"><div class="ico">🧠</div><h3>AI 여행 자동 생성</h3>
+          <p>지역·기간·스타일 → GPT 후보 → 임베딩 의미검색(pgvector) → 이동거리 확정</p></div>
+        <div class="card"><div class="ico">👥</div><h3>실시간 공동 편집</h3>
+          <p>WebSocket + Redis Stream 브로드캐스트, Worker가 trips.data로 flush, 프레즌스</p></div>
+        <div class="card"><div class="ico">🗺️</div><h3>멀티미디어 발자취 지도</h3>
+          <p>사진·음성·영상 → 지역별 대표 추억을 PostGIS 핀 + 권역 색칠로 시각화</p></div>
+        <div class="card"><div class="ico">🏛️</div><h3>관광 데이터 파이프라인</h3>
+          <p>TourAPI 주간 동기 적재 + 상세 write-through 캐시로 응답 가속</p></div>
+      </div>
+      <div style="display:flex; gap:10px;">
+        <span class="pill">백엔드 클래스 126</span><span class="pill">DB 테이블 12</span><span class="pill">화면 10종</span><span class="pill">REST + WebSocket</span>
+      </div>
+    </div>
+    <div class="foot"><div class="brand-mini"><span class="logo-mark">W</span> 어디갈래? · WSWG</div><div>02 · 개발 결과</div></div>
+  </section>
+
+  <!-- 7. 개발 환경 -->
+  <section class="slide">
+    <div class="slide-head"><div class="kicker"><span class="num-chip">02</span><span class="eyebrow">Environment</span></div>
+      <h2 class="head">개발 환경 · 기술 스택</h2></div>
+    <div class="body"><div class="grid" style="grid-template-columns:repeat(3,1fr); gap:14px;">
+      <div class="card"><h3 style="color:var(--brand)">Frontend</h3><p>Vue 3.5 · Vite 8<br/>Pinia · Vue Router<br/>Tailwind 4 · reka-ui<br/>Naver Maps</p></div>
+      <div class="card"><h3 style="color:var(--brand)">Backend</h3><p>Java 21 · Spring Boot 3.5<br/>MyBatis<br/>Spring Security<br/>OAuth2 + JWT</p></div>
+      <div class="card"><h3 style="color:var(--brand)">Database</h3><p>PostgreSQL 16<br/>PostGIS (공간)<br/>pgvector (임베딩)<br/>Redis</p></div>
+      <div class="card"><h3 style="color:var(--brand)">External</h3><p>한국관광공사 TourAPI<br/>OpenAI 임베딩<br/>Naver Directions<br/>ODsay 대중교통</p></div>
+      <div class="card"><h3 style="color:var(--brand)">Realtime</h3><p>WebSocket<br/>Redis Stream·Pub/Sub<br/>Flush Worker<br/>Presence</p></div>
+      <div class="card"><h3 style="color:var(--brand)">협업·인프라</h3><p>Docker · Nginx<br/>GitHub Flow · TDD<br/>AGENTS.md 단일 규칙<br/>GitLab 제출</p></div>
+    </div></div>
+    <div class="foot"><div class="brand-mini"><span class="logo-mark">W</span> 어디갈래? · WSWG</div><div>02 · 개발 환경</div></div>
+  </section>
+
+  <!-- 8. 전체 시스템 구조도 (재설계) -->
+  <section class="slide">
+    <div class="slide-head"><div class="kicker"><span class="num-chip">03</span><span class="eyebrow">Architecture · Logical</span></div>
+      <h2 class="head">전체 시스템 구조도</h2>
+      <p class="sub">클라이언트 → 애플리케이션 → 데이터, 3계층. REST(동기)와 WebSocket(실시간) 이중 채널.</p></div>
+    <div class="body" style="gap:14px;">
+      <div style="display:grid; grid-template-columns:1fr 200px; gap:16px; align-items:stretch;">
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <div class="layer"><span class="lname">CLIENT</span>
+            <div style="display:flex; gap:12px;">
+              <div class="node brand" style="flex:1">Vue 3 SPA<small>화면 10종 · Pinia · Tailwind</small></div>
+              <div class="node" style="flex:1">Naver Maps<small>발자취 지도 렌더</small></div>
+            </div></div>
+          <div class="vlabel">REST ↑↓ &nbsp;&nbsp; WebSocket ↑↓</div>
+          <div class="layer"><span class="lname">APPLICATION · Spring Boot</span>
+            <div style="display:flex; gap:12px;">
+              <div class="node" style="flex:1.4">Controller → Service → DAO<small>인증(JWT) · 8 컨트롤러 · 16 서비스</small></div>
+              <div class="node" style="flex:1">PlanEdit WS Handler<small>편집 이벤트 처리</small></div>
+            </div></div>
+          <div class="vlabel">JDBC / MyBatis ↓ &nbsp;&nbsp; Stream·Pub/Sub ↓</div>
+          <div class="layer"><span class="lname">DATA</span>
+            <div style="display:flex; gap:12px;">
+              <div class="node db" style="flex:1.4">PostgreSQL 16<small>PostGIS · pgvector · 12 tables</small></div>
+              <div class="node redis" style="flex:1">Redis<small>Stream · Pub/Sub · Lock</small></div>
+            </div></div>
+        </div>
+        <div class="layer" style="display:flex; flex-direction:column; justify-content:center; gap:9px;">
+          <span class="lname">EXTERNAL</span>
+          <div class="node ext">TourAPI<small>관광 데이터</small></div>
+          <div class="node ext">OpenAI<small>임베딩</small></div>
+          <div class="node ext">Naver · ODsay<small>이동거리</small></div>
+        </div>
+      </div>
+      <p class="note center">편집 이벤트는 Redis Stream을 거쳐 Flush Worker가 trips.data(JSONB)로 모아 저장 · 상세: 클래스다이어그램.md</p>
+    </div>
+    <div class="foot"><div class="brand-mini"><span class="logo-mark">W</span> 어디갈래? · WSWG</div><div>03 · 시스템 구조</div></div>
+  </section>
+
+  <!-- 9. 분산 환경 아키텍처 (NEW) -->
+  <section class="slide">
+    <div class="slide-head"><div class="kicker"><span class="num-chip">03</span><span class="eyebrow">Architecture · Distributed</span></div>
+      <h2 class="head">분산 환경 아키텍처</h2>
+      <p class="sub">앱 서버는 <b>무상태(stateless)</b> · 공유 상태는 모두 Redis·DB에 → 수평 확장 가능.</p></div>
+    <div class="body"><div style="display:grid; grid-template-columns:1.3fr 0.9fr; gap:26px; align-items:center;">
+      <div style="display:flex; flex-direction:column; gap:8px; align-items:center;">
+        <div class="node" style="width:220px">사용자 · 브라우저</div>
+        <div class="varrow">│ HTTPS</div>
+        <div class="node brand" style="width:300px">Nginx<small>Reverse Proxy · TLS · 정적 서빙 · Load Balancer</small></div>
+        <div class="varrow">╱&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;╲</div>
+        <div style="display:flex; gap:18px;">
+          <div class="node" style="width:170px">Server A<small>Spring Boot · Docker</small></div>
+          <div class="node" style="width:170px">Server B<small>Spring Boot · Docker</small></div>
+        </div>
+        <div class="varrow">╲&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;╱ &nbsp; 공유</div>
+        <div style="display:flex; gap:18px;">
+          <div class="node redis" style="width:200px">Redis<small>Stream · Pub/Sub · 분산 Lock</small></div>
+          <div class="node db" style="width:200px">PostgreSQL<small>PostGIS · pgvector</small></div>
+        </div>
+      </div>
+      <div>
+        <div class="pill" style="margin-bottom:12px">Redis가 분산의 핵심</div>
+        <ul class="clean sm">
+          <li><b>편집 Stream</b> — 모든 서버가 같은 Redis Stream에 편집 append</li>
+          <li><b>Pub/Sub fan-out</b> — A 서버 편집을 B 서버의 WebSocket 세션까지 브로드캐스트</li>
+          <li><b>분산 Lock</b> — <span class="tag t-gray">plan:{id}:flushLock</span> 으로 여행당 단 1대만 DB flush (정확히 한 번)</li>
+          <li><b>무상태 앱</b> — 세션·편집 상태를 서버에 두지 않아 A/B 어느 쪽이 받아도 동일 동작</li>
+        </ul>
+      </div>
+    </div></div>
+    <div class="foot"><div class="brand-mini"><span class="logo-mark">W</span> 어디갈래? · WSWG</div><div>03 · 분산 환경</div></div>
+  </section>
+
+  <!-- 10. 전체 데이터 ERD (NEW) -->
+  <section class="slide">
+    <div class="slide-head"><div class="kicker"><span class="num-chip">03</span><span class="eyebrow">Data · ERD</span></div>
+      <h2 class="head">전체 데이터 ERD — 12 테이블</h2></div>
+    <div class="body" style="gap:12px;">
+      <div style="display:grid; grid-template-columns:1fr 268px; gap:18px; align-items:center;">
+        <div style="background:var(--paper); border:1px solid var(--line); border-radius:12px; padding:8px;">
+          <img src="assets/screens/erd.png" alt="전체 ERD" style="width:100%; display:block; max-height:330px; object-fit:contain;"/>
+        </div>
+        <div>
+          <div class="pill" style="margin-bottom:10px">🔄 변경 이력</div>
+          <ul class="clean sm" style="gap:8px">
+            <li><b>11 → 9 테이블</b> : trip_items·trip_media·trip_region_snapshots 제거 → <span class="tag t-orange">trips.data JSONB</span> 통합</li>
+            <li><b>9 → 12 테이블</b> : 개발 중 3종 추가</li>
+            <li><span class="tag t-purple">attraction_embeddings</span> AI 의미검색</li>
+            <li><span class="tag t-yellow">group_join_requests</span> 가입 승인</li>
+            <li><span class="tag t-gray">batch_run_log</span> 적재 감사 로그</li>
+          </ul>
+        </div>
+      </div>
+      <p class="note center">관계가 있는 것은 정규화 테이블 · 자기 여행 안에서 끝나는 항목·미디어는 trips.data 문서 · 상세: ER다이어그램.md</p>
+    </div>
+    <div class="foot"><div class="brand-mini"><span class="logo-mark">W</span> 어디갈래? · WSWG</div><div>03 · 전체 ERD</div></div>
+  </section>
+
+  <!-- 11. 데이터 모델 하이브리드 -->
+  <section class="slide">
+    <div class="slide-head"><div class="kicker"><span class="num-chip">03</span><span class="eyebrow">Data · Model</span></div>
+      <h2 class="head">데이터 모델 — 하이브리드 설계</h2>
+      <p class="sub">관계 = 정규화 테이블 · 자기 여행 안에서 끝나는 항목·미디어 = <b>trips.data JSONB 문서</b></p></div>
+    <div class="body"><div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px;">
+      <div class="card soft"><h3 style="font-size:15px">🌐 관광 마스터 (5)</h3>
+        <p><span class="tag t-blue">sidos</span><span class="tag t-blue">guguns</span><span class="tag t-blue">contenttypes</span><span class="tag t-blue">attractions</span><span class="tag t-purple">attraction_embeddings</span></p>
+        <p style="margin-top:8px">TourAPI 적재 + pgvector 의미검색</p></div>
+      <div class="card soft"><h3 style="font-size:15px">👤 회원·모임 (4)</h3>
+        <p><span class="tag t-green">users</span><span class="tag t-green">groups</span><span class="tag t-green">user_group</span><span class="tag t-yellow">group_join_requests</span></p>
+        <p style="margin-top:8px">OAuth2 · 초대 링크 · 가입 승인</p></div>
+      <div class="card soft"><h3 style="font-size:15px">🧳 여행·지도·로그 (3)</h3>
+        <p><span class="tag t-orange">trips (JSONB)</span><span class="tag t-orange">group_region_media</span><span class="tag t-gray">batch_run_log</span></p>
+        <p style="margin-top:8px">계획↔기록 · 지역당 대표 추억 1개</p></div>
+    </div></div>
+    <p class="note center" style="margin-bottom:54px">PostGIS geom = lat/lng GENERATED 파생(3NF) · 개인/모임 여행 XOR 제약 · 지역당 1개 UNIQUE</p>
+    <div class="foot"><div class="brand-mini"><span class="logo-mark">W</span> 어디갈래? · WSWG</div><div>03 · 데이터 모델</div></div>
+  </section>
+
+  <!-- 12. TourAPI 주간 적재 (NEW) -->
+  <section class="slide">
+    <div class="slide-head"><div class="kicker"><span class="num-chip">04</span><span class="eyebrow">Data Pipeline</span></div>
+      <h2 class="head">TourAPI 주간 자동 적재</h2>
+      <p class="sub"><span class="tag t-gray">@Scheduled(cron="0 0 4 * * MON")</span> — <b>매주 월요일 오전 4시</b> 자동 실행. 변경분만 반영.</p></div>
+    <div class="body"><div style="display:grid; grid-template-columns:1.15fr 0.85fr; gap:26px; align-items:center;">
+      <div style="display:flex; flex-direction:column; gap:9px;">
+        <div class="step"><div class="n">1</div><h4>전체 목록 수집 (areaBasedSyncList)</h4><p>page1로 totalCount 확인 → 페이지 루프(numOfRows)로 전국 관광지 수집</p></div>
+        <div class="step"><div class="n">2</div><h4>검증 · 필터</h4><p>sido·gugun·contentType FK 유효성 검사, 좌표·필수값 누락은 skip (skippedValidation/FK 집계)</p></div>
+        <div class="step"><div class="n">3</div><h4>Upsert (멱등)</h4><p><span class="tag t-gray">ON CONFLICT (content_id) DO UPDATE</span> — content_id 기준으로 신규는 INSERT, 기존은 갱신</p></div>
+        <div class="step"><div class="n">4</div><h4>감사 로그</h4><p>batch_run_log에 1행 기록 — SUCCESS · DEGRADED · ABORTED</p></div>
+      </div>
+      <div>
+        <div class="pill" style="margin-bottom:12px">🔍 변경 감지 = modified_time</div>
+        <ul class="clean sm">
+          <li><b>content_id</b> = TourAPI 고유키 → 같은 장소는 항상 같은 행에 매핑</li>
+          <li>응답의 <b>modifiedtime</b>을 함께 저장 → "언제 바뀌었는지" 추적</li>
+          <li>Upsert가 변경분을 <b>덮어쓰기</b>하므로 별도 diff 불필요 (멱등)</li>
+          <li>상세(A-6)는 modified_time이 바뀌면 <b>write-through 캐시 무효화</b> → 재조회</li>
+        </ul>
+        <p class="note">관리자 수동 적재(POST /load)로도 동일 엔진 실행 가능</p>
+      </div>
+    </div></div>
+    <div class="foot"><div class="brand-mini"><span class="logo-mark">W</span> 어디갈래? · WSWG</div><div>04 · TourAPI 적재</div></div>
+  </section>
+
+  <!-- 13. AI 벡터 검색 코사인 (NEW) -->
+  <section class="slide">
+    <div class="slide-head"><div class="kicker"><span class="num-chip">04</span><span class="eyebrow">AI · Vector Search</span></div>
+      <h2 class="head">AI 벡터 검색 · 코사인 유사도</h2>
+      <p class="sub">키워드 매칭이 아닌 <b>"의미(분위기)"</b> 검색 — OpenAI 임베딩 + pgvector.</p></div>
+    <div class="body" style="gap:14px;">
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px; align-items:center;">
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <div class="step"><div class="n">1</div><h4>임베딩 생성</h4><p>관광지 설명을 <b>text-embedding-3-small</b>로 1536차원 벡터화 → attraction_embeddings (HNSW 인덱스)</p></div>
+          <div class="step"><div class="n">2</div><h4>질의 벡터화</h4><p>사용자 조건("바다 보이는 한적한 카페")도 같은 모델로 임베딩</p></div>
+          <div class="step"><div class="n">3</div><h4>코사인 유사도 정렬</h4><p>pgvector <span class="tag t-gray">&lt;=&gt;</span> 연산자로 최근접 K개 검색 (HNSW 근사)</p></div>
+        </div>
+        <div>
+          <div class="formula" style="margin-bottom:12px">
+            similarity = <span class="big">1 − (e.embedding &lt;=&gt; query)</span>
+            <div class="note" style="margin-top:8px">&lt;=&gt; = 코사인 거리 (0=동일, 2=정반대) · 1−거리 = 유사도</div>
+          </div>
+          <div class="code"><span class="cm">-- 의미상 가까운 관광지 K개</span><br/>
+            <span class="c1">SELECT</span> a.title,<br/>
+            &nbsp;&nbsp;1 - (e.embedding <span class="c3">&lt;=&gt;</span> :q) <span class="c1">AS</span> similarity<br/>
+            <span class="c1">FROM</span> attractions a<br/>
+            <span class="c1">JOIN</span> attraction_embeddings e <span class="c1">USING</span>(content_id)<br/>
+            <span class="c1">ORDER BY</span> e.embedding <span class="c3">&lt;=&gt;</span> :q <span class="cm">-- HNSW</span><br/>
+            <span class="c1">LIMIT</span> :k;</div>
+        </div>
+      </div>
+      <p class="note center">AI 자동 생성도 이 검색으로 후보 관광지를 매칭 → GPT가 동선을 구성</p>
+    </div>
+    <div class="foot"><div class="brand-mini"><span class="logo-mark">W</span> 어디갈래? · WSWG</div><div>04 · AI 벡터 검색</div></div>
+  </section>
+
+  <!-- 14. Redis <-> DB 디바운스 flush (NEW) -->
+  <section class="slide">
+    <div class="slide-head"><div class="kicker"><span class="num-chip">04</span><span class="eyebrow">Realtime · Debounce</span></div>
+      <h2 class="head">실시간 동기화 — Redis ↔ DB 디바운스</h2>
+      <p class="sub">키 입력마다 DB를 쓰지 않는다. 편집은 Redis에 쌓고, <b>10초 주기로 한 번에 flush</b>.</p></div>
+    <div class="body"><div style="display:grid; grid-template-columns:1.2fr 0.8fr; gap:26px; align-items:center;">
+      <div style="display:flex; flex-direction:column; gap:9px; align-items:stretch;">
+        <div class="node brand">편집 이벤트 (ADD / UPDATE / DELETE / 타이핑)</div>
+        <div class="varrow">│ 즉시 append &nbsp;·&nbsp; 다른 편집자에게 Pub/Sub 브로드캐스트</div>
+        <div class="node redis">Redis Stream <small>plan:{tripId}:stream — 라이브 편집 누적 (빠른 쓰기)</small></div>
+        <div class="varrow">│ <b>@Scheduled(fixedDelay = 10s)</b> · 디바운스</div>
+        <div class="node">Flush Worker <small>분산 Lock 획득 → lastFlushedId 이후 레코드만 → trips.data 반영</small></div>
+        <div class="varrow">│ 통째 1회 쓰기</div>
+        <div class="node db">PostgreSQL · trips.data (JSONB)</div>
+      </div>
+      <div>
+        <div class="pill" style="margin-bottom:12px">왜 디바운스인가</div>
+        <ul class="clean sm">
+          <li><b>DB 쓰기 폭증 방지</b> — 키 입력당 1 write → 10초당 1 write</li>
+          <li><b>응답 즉시성</b> — 화면 반영은 Redis로 즉시, DB는 비동기</li>
+          <li><b>정확히 한 번</b> — <span class="tag t-gray">flushLock</span> + lastFlushedId 커서로 여러 서버 중복 flush·재처리 방지</li>
+          <li><b>유실 안전</b> — flush 전 장애 시 Stream에 편집이 남아 다음 주기에 복구</li>
+        </ul>
+      </div>
+    </div></div>
+    <div class="foot"><div class="brand-mini"><span class="logo-mark">W</span> 어디갈래? · WSWG</div><div>04 · Redis ↔ DB 디바운스</div></div>
+  </section>
+
+  <!-- 15. 시연 1 -->
+  <section class="slide">
+    <div class="slide-head"><div class="kicker"><span class="num-chip">04</span><span class="eyebrow">Demo · Flow</span></div>
+      <h2 class="head">화면 흐름 · 시연 ① 검색 → 자동 생성</h2></div>
+    <div class="body"><div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:18px; align-items:center;">
+      <div><div class="browser"><div class="bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div><img src="assets/screens/s1-landing.jpg" alt="S1"/></div><p class="note center">S1 · 랜딩 / 인기 여행지</p></div>
+      <div><div class="browser"><div class="bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div><img src="assets/screens/s3-search.jpg" alt="S3"/></div><p class="note center">S3 · 관광지 검색·목록</p></div>
+      <div><div class="browser"><div class="bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div><img src="assets/screens/s5-generate.jpg" alt="S5"/></div><p class="note center">S5 · AI 여행 자동 생성</p></div>
+    </div></div>
+    <div class="foot"><div class="brand-mini"><span class="logo-mark">W</span> 어디갈래? · WSWG</div><div>04 · 시연 ①</div></div>
+  </section>
+
+  <!-- 16. 시연 2 -->
+  <section class="slide">
+    <div class="slide-head"><div class="kicker"><span class="num-chip">04</span><span class="eyebrow">Demo · Signature</span></div>
+      <h2 class="head">화면 흐름 · 시연 ② 실시간 협업 → 발자취 지도</h2></div>
+    <div class="body"><div style="display:grid; grid-template-columns:1.22fr 1fr; gap:20px; align-items:center;">
+      <div><div class="browser"><div class="bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        <span style="margin-left:8px;font-size:12px;color:var(--ink-3)">trips/부산-2박3일</span></div>
+        <img src="assets/screens/s6-editor.jpg" alt="S6"/></div>
+        <p class="note center">S6 · 여행 편집 — <b style="color:var(--brand)">3명 동시 편집</b> · 노션식 블록</p></div>
+      <div><div class="browser"><div class="bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+        <img src="assets/screens/s8-map.jpg" alt="S8"/></div>
+        <p class="note center">S8 · 발자취 지도 — 지역 색칠 · 대표 추억</p></div>
+    </div></div>
+    <div class="foot"><div class="brand-mini"><span class="logo-mark">W</span> 어디갈래? · WSWG</div><div>04 · 시연 ② 시그니처</div></div>
+  </section>
+
+  <!-- 17. 적용 패턴 -->
+  <section class="slide">
+    <div class="slide-head"><div class="kicker"><span class="num-chip">04</span><span class="eyebrow">Pattern</span></div>
+      <h2 class="head">적용 패턴 · 핵심 알고리즘</h2></div>
+    <div class="body"><div style="display:grid; grid-template-columns:1fr 1fr; gap:24px; align-items:center;">
+      <div>
+        <div class="pill" style="margin-bottom:13px">🧠 AI 자동 생성 파이프라인</div>
+        <div style="display:flex;flex-direction:column;gap:9px">
+          <div class="step"><div class="n">1</div><h4>GPT 후보 생성</h4><p>지역·기간·스타일 → 일자별 동선 후보</p></div>
+          <div class="step"><div class="n">2</div><h4>임베딩 의미 검색</h4><p>pgvector 코사인 유사도로 관광지 매칭</p></div>
+          <div class="step"><div class="n">3</div><h4>이동거리 보정</h4><p>Naver·ODsay 구간 계산 → 현실성 확정</p></div>
+        </div>
+      </div>
+      <div>
+        <div class="pill" style="margin-bottom:13px">🏗️ 적용 패턴</div>
+        <ul class="clean">
+          <li><b>계층형 아키텍처</b> Controller→Service→DAO</li>
+          <li><b>하이브리드 모델</b> 관계=테이블 / 항목=JSONB</li>
+          <li><b>Write-through 캐시</b> 상세 최초 조회 시 채움</li>
+          <li><b>Event Stream + 디바운스</b> 편집 누적→비동기 flush</li>
+          <li><b>분산 Lock</b> 다중 서버 정확히 한 번 처리</li>
+        </ul>
+      </div>
+    </div></div>
+    <div class="foot"><div class="brand-mini"><span class="logo-mark">W</span> 어디갈래? · WSWG</div><div>04 · 패턴·알고리즘</div></div>
+  </section>
+
+  <!-- 18. 트러블슈팅 1: MySQL -> PostgreSQL -->
+  <section class="slide">
+    <div class="slide-head"><div class="kicker"><span class="num-chip">05</span><span class="eyebrow">Troubleshooting</span></div>
+      <h2 class="head">트러블슈팅 ① MySQL → PostgreSQL 전환</h2></div>
+    <div class="body"><div style="display:grid; grid-template-columns:1fr 1fr; gap:24px; align-items:center;">
+      <div>
+        <div class="pill" style="margin-bottom:12px">왜 바꿨나</div>
+        <ul class="clean sm">
+          <li><b>공간 데이터</b> — 발자취 지도·근접 검색에 GIS가 필요한데 MySQL은 기능·인덱스가 제한적</li>
+          <li><b>벡터 검색</b> — AI 의미검색용 임베딩을 DB에서 직접 색인·정렬해야 함</li>
+          <li>둘을 한 DB에서 → <b>PostgreSQL + PostGIS + pgvector</b>로 결정</li>
+        </ul>
+      </div>
+      <div>
+        <div class="pill" style="margin-bottom:12px">전환하며 바뀐 것</div>
+        <ul class="clean sm">
+          <li><b>확장</b> PostGIS(geom·GiST) · pgvector(HNSW) 도입</li>
+          <li><b>모델 단순화</b> 11→9 테이블 (항목·미디어를 trips.data JSONB로 통합)</li>
+          <li><b>문법</b> upsert를 <span class="tag t-gray">ON CONFLICT ... DO UPDATE</span> 로 전환</li>
+          <li><b>배포 교훈</b> 설정은 <span class="tag t-gray">${REDIS_HOST:localhost}</span> env-fallback 으로 — 하드코딩 host가 운영 redis를 덮어써 크래시 → 수정</li>
+        </ul>
+      </div>
+    </div></div>
+    <div class="foot"><div class="brand-mini"><span class="logo-mark">W</span> 어디갈래? · WSWG</div><div>05 · 트러블슈팅 ①</div></div>
+  </section>
+
+  <!-- 19. 트러블슈팅 2: 메시지 유실 -->
+  <section class="slide">
+    <div class="slide-head"><div class="kicker"><span class="num-chip">05</span><span class="eyebrow">Troubleshooting</span></div>
+      <h2 class="head">트러블슈팅 ② 실시간 편집 — 메시지 유실</h2>
+      <p class="sub">증상: 빠르게 타이핑하면 일부 글자가 <b>저장되지 않거나 되돌아감</b>.</p></div>
+    <div class="body"><div style="display:grid; grid-template-columns:1fr 1fr; gap:18px;">
+      <div style="display:flex; flex-direction:column; gap:10px;">
+        <div class="ps"><div class="p">🐞 원인 A · PUT 폴백이 Redis 우회</div><div class="s">편집 중 REST PUT이 Redis state를 건너뛰어, flush 워커가 <b>옛 상태로 DB를 덮어씀</b> → 입력이 되돌아감</div></div>
+        <div class="ps"><div class="p">🐞 원인 B · 편집 락 안에서 DB 경합</div><div class="s">한 락 안에서 DB를 두 번 읽어 경합 → <b>BUSY 거부</b>를 FE가 조용히 폐기</div></div>
+        <div class="ps"><div class="p">🐞 원인 D · 재연결 sync 덮어쓰기</div><div class="s">재접속 시 서버 state가 <b>로컬 미전송 편집을 덮어씀</b></div></div>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:10px;">
+        <div class="card soft"><h3 style="font-size:15px;color:var(--brand)">✅ 해결 — FE 측</h3>
+          <p>편집을 <b>op 큐(clientOpId)</b>에 적재 → ack 받으면 제거 · BUSY는 백오프 재시도 · ack 타임아웃(4s) 재전송 · sync 수신 시 <b>미전송 op 재적용</b> (PUT 폴백 제거)</p></div>
+        <div class="card soft"><h3 style="font-size:15px;color:var(--brand)">✅ 해결 — BE 측</h3>
+          <p>권한 확인·state 워밍을 <b>락 밖</b>으로 (락 안은 Redis 전용) · <span class="tag t-gray">appliedOps</span> 집합으로 <b>멱등 dedup</b> (재전송 중복 적용 차단) · 제목·날짜는 <span class="tag t-gray">PATCH /meta</span> 로 분리</p></div>
+        <p class="note">검증: BE 8 + FE 21 테스트 통과 · 텍스트 필드 last-writer-wins는 설계 한계로 후순위</p>
+      </div>
+    </div></div>
+    <div class="foot"><div class="brand-mini"><span class="logo-mark">W</span> 어디갈래? · WSWG</div><div>05 · 트러블슈팅 ②</div></div>
+  </section>
+
+  <!-- 20. 기대 효과 -->
+  <section class="slide">
+    <div class="slide-head"><div class="kicker"><span class="num-chip">06</span><span class="eyebrow">Impact</span></div>
+      <h2 class="head">기대 효과</h2></div>
+    <div class="body"><div class="grid" style="grid-template-columns:1fr 1fr; gap:16px;">
+      <div class="card"><div class="ico">⏱️</div><h3>계획 시간 단축</h3><p>정보 탐색·동선 구성을 AI가 대신 → 일정 초안 시간 대폭 감소</p></div>
+      <div class="card"><div class="ico">🤝</div><h3>합의 비용 감소</h3><p>실시간 공동 편집으로 단톡 왕복·버전 충돌 제거</p></div>
+      <div class="card"><div class="ico">💝</div><h3>여행 경험 완결성</h3><p>계획→공유→기억까지 한 서비스 → 리텐션 상승 기대</p></div>
+      <div class="card"><div class="ico">📈</div><h3>확장성</h3><p>TourAPI·임베딩·공간 데이터 파이프라인을 타 지역·도메인으로 확장</p></div>
+    </div></div>
+    <div class="foot"><div class="brand-mini"><span class="logo-mark">W</span> 어디갈래? · WSWG</div><div>06 · 기대 효과</div></div>
+  </section>
+
+  <!-- 21. 개발 후기 -->
+  <section class="slide">
+    <div class="slide-head"><div class="kicker"><span class="num-chip">06</span><span class="eyebrow">Retrospective</span></div>
+      <h2 class="head">개발 후기</h2></div>
+    <div class="body"><div style="display:grid; grid-template-columns:1fr 1fr; gap:18px; align-items:center;">
+      <div class="card soft" style="display:flex;flex-direction:column;justify-content:center;align-items:center;min-height:210px;color:var(--ink-3)">
+        <div style="font-size:40px">📷</div><p style="margin-top:8px;font-weight:600">팀 사진 — TODO</p></div>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div class="card"><h3 style="font-size:16px">Dev A · 계획 트랙</h3><p>한 일 / 배운 점 / 아쉬운 점 — <b>TODO</b></p></div>
+        <div class="card"><h3 style="font-size:16px">Dev B · 협업·미디어 트랙</h3><p>한 일 / 배운 점 / 아쉬운 점 — <b>TODO</b></p></div>
+      </div>
+    </div></div>
+    <div class="foot"><div class="brand-mini"><span class="logo-mark">W</span> 어디갈래? · WSWG</div><div>06 · 개발 후기</div></div>
+  </section>
+
+  <!-- 22. AI 사용 보고서 -->
+  <section class="slide">
+    <div class="slide-head"><div class="kicker"><span class="num-chip">06</span><span class="eyebrow">AI Usage Report</span></div>
+      <h2 class="head">AI 사용 보고서</h2>
+      <p class="sub"><b>AGENTS.md 단일 작업 규칙</b> 아래 Claude Code · Codex · Gemini 활용</p></div>
+    <div class="body"><div style="display:grid; grid-template-columns:1.05fr 1fr; gap:24px; align-items:center;">
+      <table class="tbl">
+        <thead><tr><th>도구</th><th>주 용도</th></tr></thead>
+        <tbody>
+          <tr><td><b>Claude Code</b></td><td class="muted">설계 문서·화면 목업·구현·발표자료</td></tr>
+          <tr><td><b>OpenAI Codex</b></td><td class="muted">독립 코드 리뷰·버그 root-cause</td></tr>
+          <tr><td><b>Gemini</b></td><td class="muted">보조 검토</td></tr>
+          <tr><td><b>OpenAI 임베딩</b></td><td class="muted">제품 내장 — 관광지 의미 검색</td></tr>
+        </tbody>
+      </table>
+      <div>
+        <div class="pill" style="margin-bottom:12px">활용 영역</div>
+        <ul class="clean sm" style="gap:9px">
+          <li>설계 문서 — 코드/스키마 기반 작성·동기화</li>
+          <li>화면 디자인 — 공통 제약 + 화면별 프롬프트로 목업</li>
+          <li>구현 — <b>TDD</b>(Testcontainers) 동반</li>
+          <li>검증 — Codex 교차 리뷰 + PR 승인 게이트</li>
+        </ul>
+        <p class="note">AI 산출물은 항상 사람이 검증 · 상세: AI사용보고서.md</p>
+      </div>
+    </div></div>
+    <div class="foot"><div class="brand-mini"><span class="logo-mark">W</span> 어디갈래? · WSWG</div><div>06 · AI 사용 보고서</div></div>
+  </section>
+
+  <!-- 23. CLOSING -->
+  <section class="slide cover" style="background:linear-gradient(120deg,#F7FAFF,#FFFFFF 65%)">
+    <div class="deco"></div>
+    <div class="badge"><span class="logo-mark" style="width:34px;height:34px;border-radius:9px;font-size:18px">W</span>
+      <span style="font-weight:800;font-size:19px">어디갈래?</span></div>
+    <h1 style="font-size:52px">고민은 우리가,<br/>여러분은 <span style="color:var(--brand)">떠나기만</span> 하세요</h1>
+    <p class="tagline">계획 → 공유 → 기억, 여행의 모든 순간을 함께.</p>
+    <div class="meta"><div style="font-size:18px;font-weight:700;color:var(--ink)">감사합니다 🙏</div></div>
+  </section>
+
+</div>
+
+<div id="hud">1 / 23</div>
+<div class="hint">← → 또는 Space 이동 · <span class="kbd">F</span> 전체화면 · <span class="kbd">P</span> 인쇄(PDF)</div>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  let i = 0;
+  const hud = document.getElementById('hud'), prog = document.getElementById('progress');
+  function show(n){
+    i = Math.max(0, Math.min(slides.length-1, n));
+    slides.forEach((s,k)=>s.classList.toggle('active', k===i));
+    hud.textContent = (i+1)+' / '+slides.length;
+    prog.style.width = ((i+1)/slides.length*100)+'%';
+    history.replaceState(null,'','#'+(i+1));
+  }
+  function fit(){
+    const sc = Math.min(1, (window.innerWidth-40)/1280, (window.innerHeight-40)/720);
+    slides.forEach(s=>{ s.style.transform='scale('+sc+')'; s.style.transformOrigin='center'; });
+  }
+  window.addEventListener('keydown', e=>{
+    if(['ArrowRight','PageDown',' '].includes(e.key)){ e.preventDefault(); show(i+1); }
+    else if(['ArrowLeft','PageUp'].includes(e.key)){ e.preventDefault(); show(i-1); }
+    else if(e.key==='Home'){ show(0); } else if(e.key==='End'){ show(slides.length-1); }
+    else if(e.key==='f'||e.key==='F'){ if(!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
+    else if(e.key==='p'||e.key==='P'){ window.print(); }
+  });
+  document.addEventListener('click', e=>{ if(e.target.closest('a'))return; show(i+1); });
+  window.addEventListener('resize', fit);
+  const start = parseInt((location.hash||'#1').slice(1))-1;
+  fit(); show(isNaN(start)?0:start);
+</script>
+</body>
+</html>
